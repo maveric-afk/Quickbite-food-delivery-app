@@ -1,0 +1,1 @@
+Navbar:- home, menu,restaurants, help, profile

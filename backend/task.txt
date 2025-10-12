@@ -1,0 +1,28 @@
+userModel:-
+1. Profile image
+2. Full Name
+3. UserName
+4. Email
+5. Password
+6. Contact Number
+7. Address
+8. LiveOrders
+9. PastOrders
+
+fooditemModel:-
+1. Fooditem image
+2. Category
+3. Actual pricing
+4. Restaurant
+5. Brief description
+6. Rating (out of 5)
+7. Available stock
+8. Discounted Price
+9. veg/nonveg
+
+restaurantModel:-
+1. Restaurant image
+2. Restaurant Name
+3. Location
+4. Ratings
+5. Food items(array)

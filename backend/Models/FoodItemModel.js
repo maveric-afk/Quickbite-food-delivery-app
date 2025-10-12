@@ -1,0 +1,43 @@
+const mongoose=require('mongoose');
+
+const fooditemSchema=new mongoose.Schema({
+    itemImg:{
+        type:String,
+        required:true
+    },
+    description:{
+        type:String,
+        required:true,
+    },
+    category:{
+        type:String,
+        required:true,
+    },
+    actualprice:{
+        type:Number,
+        required:true,
+    },
+    restaurant:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:true,
+    },
+    rating:{
+        type:Number,
+    },
+    stock:{
+        type:Number,
+        required:true,
+    },
+    discountprice:{
+        type:Number,
+        required:true
+    },
+    type:{
+        type:String,
+        required:true
+    }
+},{timestamps:true})
+
+const fooditemModel=mongoose.Model('fooditem',fooditemSchema);
+
+module.exports=fooditemModel
