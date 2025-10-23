@@ -38,6 +38,6 @@ const fooditemSchema=new mongoose.Schema({
     }
 },{timestamps:true})
 
-const fooditemModel=mongoose.Model('fooditem',fooditemSchema);
+const fooditemModel=mongoose.model('fooditem',fooditemSchema);
 
 module.exports=fooditemModel

@@ -1,7 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
-import {NavLink} from 'react-router-dom'
+import {NavLink,useNavigate} from 'react-router-dom'
+import api from '../api/axios'
+import toast from "react-hot-toast";
 
 export default function Signin() {
   const {
@@ -13,9 +15,21 @@ export default function Signin() {
     mode: "onTouched",
   });
 
+  const navigate=useNavigate();
   const onSubmit = async (data) => {
-    // For demo purposes
-    console.log("[QuickBite] Signup data:", data);
+    api.post('/api/user/signin',data)
+    .then((res)=>{
+      if(res.data.error){
+        toast.error(res.data.error);
+      }
+      else if(res.data.success){
+        toast.success(res.data.success);
+        navigate('/');
+      }
+    })
+    .catch((e)=>{
+      console.log(e);
+    })
   };
 
   const password = watch("password");

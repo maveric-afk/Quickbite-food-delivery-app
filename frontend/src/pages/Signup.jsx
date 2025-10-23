@@ -1,21 +1,62 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
-import { NavLink } from "react-router-dom";
+import { NavLink ,useNavigate} from "react-router-dom";
+import api from '../api/axios'
+import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 export default function Signup() {
+  const [emailverified,setEmailverified]=useState(false);
+  const [clicked,setClicked]=useState(false);
+  const [otp,setOtp]=useState('');
+  const [realotp,setRealotp]=useState(0);
+  const [userdata,setUserdata]=useState({});
+
+  const navigate=useNavigate()
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isSubmitting },
-  } = useForm({
-    mode: "onTouched",
-  });
+  } = useForm();
 
-  const onSubmit = async (data) => {
-    console.log("[QuickBite] Signup data:", data);
-  };
+  async function handleVerifyEmail(e){
+  e.preventDefault();
+  if(Number(realotp) === Number(otp)){
+    setEmailverified(true);
+
+    api.post('/api/user/signup',userdata)
+.then((res)=>{
+  toast.success(res.data.success);
+  navigate('/signin')
+})
+.catch((err)=>{
+  console.log(err);
+})
+  } else {
+    toast.error('Invalid OTP');
+  }
+}
+
+
+  async function onSubmit(data) {
+    setClicked(true);
+    setUserdata(data);
+    toast.success('otp sent');
+    
+    api.post('/api/user/verifyemail',data)
+    .then((res)=>{
+      setRealotp(res.data.otp);
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+
+    reset();
+  }
+
 
   const password = watch("password");
 
@@ -36,7 +77,26 @@ export default function Signup() {
       }}
       className="bg-background text-foreground"
     >
-      <section className="flex min-h-dvh items-center justify-center p-6 md:p-10">
+      <section className={`flex min-h-dvh items-center justify-center p-6 md:p-10`}>
+
+        {(clicked && !emailverified)
+        ? <form className="p-8 border-[1px] border-orange-600 absolute z-50 text-black rounded-2xl bg-white flex flex-col items-center gap-10">
+          <div className="flex flex-col">
+          <p className="text-[15px] md:text-xl self-start lg:text-2xl">OTP Verification</p>
+          <p className="text-[7px] text-gray-300 md:text-[10px] self-start lg:text-[12px]">An otp is sent to {userdata.email}</p>
+          </div>
+            <input className="p-4 bg-gray-300 rounded-xl border-2 border-black" value={otp} placeholder="Enter the Otp" type='number' onChange={(e)=>{
+              setOtp(e.target.value)
+            }} />
+            <button 
+            onClick={handleVerifyEmail}
+            className="bg-orange-600 rounded-2xl py-1 px-3">
+              Verify
+            </button>
+        </form>
+        :<div>
+          </div>}
+ 
 
       <NavLink
               to='/'
@@ -44,7 +104,7 @@ export default function Signup() {
                   Back to Home
               </NavLink>
 
-        <div className="w-full max-w-6xl rounded-xl border border-border bg-card shadow-xl mt-12">
+        <div className={`w-full max-w-6xl ${(clicked || emailverified)?'blur-[5px] opacity-60':''} rounded-xl border border-border bg-card shadow-xl mt-12`}>
           <div className="flex flex-col md:flex-row">
             {/* Left: Image */}
             <AnimatePresence>
@@ -89,7 +149,7 @@ export default function Signup() {
                     </p>
                   </header>
 
-                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     {/* Full Name */}
                     <div className="space-y-2">
                       <label htmlFor="fullName" className="text-sm font-medium">

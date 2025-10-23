@@ -11,8 +11,8 @@ const UserSchema=new mongoose.Schema({
     },
     UserName:{
         type:String,
-        required:true,
-        unique:true
+        required:false,
+        unique:true,
     },
     Email:{
         type:String,
@@ -23,13 +23,17 @@ const UserSchema=new mongoose.Schema({
         type:String,
         required:true,
     },
+    role:{
+        type:String,
+        default:'normal'
+    },
     ContactNo:{
         type:Number,
-        required:true
+        required:false,
     },
     Address:{
         type:String,
-        required:true
+        required:false,
     },
     LiveOrders:[{
         type:mongoose.Schema.Types.ObjectId,
@@ -41,7 +45,7 @@ const UserSchema=new mongoose.Schema({
     }]
 },{timestamps:true})
 
-const UserModel=mongoose.Model('user',UserSchema);
+const UserModel=mongoose.model('user',UserSchema);
 
 module.exports=UserModel
 

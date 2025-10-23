@@ -7,6 +7,7 @@ import Signup from './pages/Signup'
 import Profile from './pages/Profile'
 import Restaurants from './pages/Restaurants'
 import Menu from './pages/Menu'
+import {Toaster} from 'react-hot-toast'
 import {createBrowserRouter,RouterProvider} from 'react-router-dom'
 
 const router=createBrowserRouter([
@@ -46,6 +47,7 @@ function App() {
   return (
     <div>
       <RouterProvider router={router}></RouterProvider>
+      <Toaster/>
     </div>
   )
 }

@@ -21,9 +21,23 @@ const restaurantSchema=new mongoose.Schema({
             type:mongoose.Schema.Types.ObjectId,
             ref:'fooditems'
         }
+    ],
+    orders:[
+        {
+            items:[
+                {
+                    type:mongoose.Schema.Types.ObjectId,
+                    ref:'fooditems'
+                }
+            ],
+            orderedBy:{
+                type:mongoose.Schema.Types.ObjectId,
+                ref:'users'
+            }
+        }
     ]
 },{timestamps:true})
 
-const restaurantModel=mongoose.Model('restaurant',restaurantSchema);
+const restaurantModel=mongoose.model('restaurant',restaurantSchema);
 
 module.exports=restaurantModel

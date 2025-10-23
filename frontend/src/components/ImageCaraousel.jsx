@@ -81,7 +81,7 @@ export default function ImageCarousel(){
           <img
             src={images[currentIndex].src}
             alt={images[currentIndex].alt}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-fill"
             loading={currentIndex === 0 ? 'eager' : 'lazy'}
             draggable={false}
           />
@@ -106,27 +106,6 @@ export default function ImageCarousel(){
           />
         ))}
       </div>
-
-      {/* Navigation arrows */}
-      <motion.button
-        onClick={() => paginate(-1)}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full backdrop-blur-sm transition-all"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        aria-label="Previous image"
-      >
-        ←
-      </motion.button>
-      
-      <motion.button
-        onClick={() => paginate(1)}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full backdrop-blur-sm transition-all"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        aria-label="Next image"
-      >
-        →
-      </motion.button>
     </div>
   );
 };

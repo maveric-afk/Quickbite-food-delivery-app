@@ -1,17 +1,20 @@
-import React from "react";
+import React,{useState} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {NavLink} from 'react-router-dom'
+import api from '../api/axios'
+import { useEffect } from "react";
 
 const links = [
   { href: "/", label: "Home" },
   { href: "/menu", label: "Menu" },
   { href: "/restaurants", label: "Restaurants" },
   { href: "/help", label: "Help" },
-  { href: "/signin", label: "login" },
+
 ];
 
 export default function Navbar() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [loggedIn,setLoggedIn]=useState(false)
 
   const toggle = () => setOpen((v) => !v);
   const close = () => setOpen(false);
@@ -26,6 +29,18 @@ export default function Navbar() {
     },
     exit: { height: 0, opacity: 0, y: -12, transition: { duration: 0.2 } },
   };
+
+  useEffect(()=>{
+    api.get('/api/user')
+    .then((res)=>{
+      if(res.data.success){
+        setLoggedIn(true);
+      }
+    })
+    .catch((err)=>{
+      console.log(err);
+    })
+  },[])
 
   return (
     <nav
@@ -53,11 +68,11 @@ export default function Navbar() {
               initial="rest"
               whileHover="hover"
               animate="rest"
-              className="relative bg-[rgba(255,255,255,0.1)] p-2 rounded-2xl"
+              className="relative bg-orange-600 hover:bg-orange-500 px-3 py-1 rounded-xl"
             >
               <NavLink
                 to={l.href}
-                className="transition-colors duration-200 hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white rounded-sm"
+                className="transition-colors duration-200 rounded-sm"
               >
                 {l.label}
               </NavLink>
@@ -71,6 +86,47 @@ export default function Navbar() {
               />
             </motion.div>
           ))}
+          {loggedIn
+         ? <motion.div
+              initial="rest"
+              whileHover="hover"
+              animate="rest"
+            >
+              <NavLink
+                to='/profile'
+              >
+               <img src="/Dummyavatar.jpg" alt="profileImage" className="h-10 w-10 rounded-full" />
+              </NavLink>
+              <motion.span
+                variants={{
+                  rest: { width: 0, opacity: 0 },
+                  hover: { width: "100%", opacity: 1 },
+                }}
+                transition={{ type: "tween", duration: 0.2 }}
+                className="absolute left-0 -bottom-1 h-0.5 bg-orange-600 block"
+              />
+            </motion.div>
+        : <motion.div
+              initial="rest"
+              whileHover="hover"
+              animate="rest"
+              className="relative bg-orange-600 hover:bg-orange-500 px-3 py-1 rounded-xl"
+            >
+              <NavLink
+                to='/signup'
+                className="transition-colors duration-200 rounded-sm"
+              >
+                Register
+              </NavLink>
+              <motion.span
+                variants={{
+                  rest: { width: 0, opacity: 0 },
+                  hover: { width: "100%", opacity: 1 },
+                }}
+                transition={{ type: "tween", duration: 0.2 }}
+                className="absolute left-0 -bottom-1 h-0.5 bg-orange-600 block"
+              />
+            </motion.div>}
         </div>
 
         {/* Mobile hamburger */}
@@ -118,6 +174,32 @@ export default function Navbar() {
             className="md:hidden overflow-hidden bg-black text-white absolute top-4 right-4 z-20"
           >
             <div className="px-4 pt-2 pb-4 space-y-2">
+              {loggedIn
+              ? <motion.div
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <NavLink
+                    to='/profile'
+                    onClick={close}
+                  >
+                   <img src="/Dummyavatar.jpg" alt="profileImage" className="h-10 w-10 mb-4 rounded-full" />
+                  </NavLink>
+                </motion.div>
+                : <motion.div
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <NavLink
+                    to='/signup'
+                    onClick={close}
+                    className="block py-2 rounded-md transition-colors hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
+                  >
+                    Register
+                  </NavLink>
+                </motion.div>}
               {links.map((l) => (
                 <motion.div
                   key={l.href}

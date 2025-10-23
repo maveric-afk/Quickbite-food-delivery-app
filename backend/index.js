@@ -1,6 +1,9 @@
 const express=require('express');
 const mongoose=require('mongoose');
+const userRouter=require('./Routes/user')
 const {connectToDB}=require('./connection')
+const cors=require('cors');
+const cookieparser=require('cookie-parser')
 
 const app=express();
 const PORT=7000;
@@ -12,7 +15,24 @@ connectToDB('mongodb://127.0.0.1:27017/quickbite')
     console.log('Error in connecting MongoDB');
 })
 
-app.listen(()=>{
+app.use(express.urlencoded({extended:false}));
+app.use(express.json());
+app.use(cookieparser());
+
+const allowedOrigins=[
+    'http://localhost:5173',
+    'http://localhost:5174'
+]
+app.use(cors(
+    {
+    origin: allowedOrigins,
+    credentials: true, 
+  }
+));
+
+app.use('/api/user',userRouter);
+
+app.listen(PORT,()=>{
     console.log(`Server started at Port ${PORT}`);
 })
 
