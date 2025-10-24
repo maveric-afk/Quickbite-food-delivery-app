@@ -83,7 +83,7 @@ export default function Signup() {
         ? <form className="p-8 border-[1px] border-orange-600 absolute z-50 text-black rounded-2xl bg-white flex flex-col items-center gap-10">
           <div className="flex flex-col">
           <p className="text-[15px] md:text-xl self-start lg:text-2xl">OTP Verification</p>
-          <p className="text-[7px] text-gray-300 md:text-[10px] self-start lg:text-[12px]">An otp is sent to {userdata.email}</p>
+          <p className="text-[7px] text-gray-500 md:text-[10px] self-start lg:text-[12px]">An otp is sent to {userdata.email}</p>
           </div>
             <input className="p-4 bg-gray-300 rounded-xl border-2 border-black" value={otp} placeholder="Enter the Otp" type='number' onChange={(e)=>{
               setOtp(e.target.value)
@@ -168,6 +168,31 @@ export default function Signup() {
                       {errors.fullName && (
                         <p id="fullName-error" className="text-sm text-destructive">
                           {errors.fullName.message}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Contact No. */}
+                    <div className="space-y-2">
+                      <label htmlFor="contactno" className="text-sm font-medium">
+                        Contact No.
+                      </label>
+                      <input
+                        id="contactno"
+                        type="number"
+                        placeholder="XXX-XXX-XXXX"
+                        className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-foreground placeholder:text-muted-foreground transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/60"
+                        {...register("contactno", {
+                          required: "Contact No. is required",
+                          minLength:10,
+                           maxLength:10
+                        })}
+                        aria-invalid={!!errors.contactno || undefined}
+                        aria-describedby={errors.contactno ? "contact-error" : undefined}
+                      />
+                      {errors.contactno && (
+                        <p id="contact-error" className="text-sm text-destructive">
+                          {errors.contactno.message}
                         </p>
                       )}
                     </div>

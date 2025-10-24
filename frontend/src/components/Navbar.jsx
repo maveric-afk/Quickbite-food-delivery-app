@@ -1,7 +1,8 @@
 import React,{useState} from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {NavLink} from 'react-router-dom'
+import {NavLink,useNavigate} from 'react-router-dom'
 import api from '../api/axios'
+import toast from "react-hot-toast";
 import { useEffect } from "react";
 
 const links = [
@@ -41,6 +42,23 @@ export default function Navbar() {
       console.log(err);
     })
   },[])
+
+  const navigate=useNavigate();
+  const handleLogout=()=>{
+    api.get('/api/user/logout')
+    .then((res)=>{
+      if(res.data.success){
+        toast.success(res.data.success);
+        navigate('/');
+      }
+      else{
+        toast.error(res.data.error)
+      }
+    })
+    .catch((e)=>{
+      console.log(e);
+    })
+  }
 
   return (
     <nav

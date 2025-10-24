@@ -1,9 +1,13 @@
 const express=require('express');
 const mongoose=require('mongoose');
 const userRouter=require('./Routes/user')
+const restaurantRouter=require('./Routes/restaurant')
 const {connectToDB}=require('./connection')
 const cors=require('cors');
 const cookieparser=require('cookie-parser')
+const dotenv=require('dotenv')
+
+dotenv.config()
 
 const app=express();
 const PORT=7000;
@@ -31,6 +35,7 @@ app.use(cors(
 ));
 
 app.use('/api/user',userRouter);
+app.use('/api/restaurant',restaurantRouter);
 
 app.listen(PORT,()=>{
     console.log(`Server started at Port ${PORT}`);

@@ -25,9 +25,9 @@ const sendmail=(to,sub,msg)=>{
 
 async function handleVerifyEmail(req,res) {
     const body=req.body;
-  const otp=Math.floor(Math.random()*10000) + 1000;
+  const otp=Math.floor(Math.random()*9999) + 1000;
   sendmail(body.email,'Otp Verification for Your Quickbite Account'
-    ,`<h2>Dear ${body.fullName}</h2><br><br>
+    ,`<h2>Dear ${body.fullName}</h2><br>
 
 Your One-Time Password (OTP) is<br><br> <h1><b>${otp}</b></h1>.
 Please use this code to complete your verification.
@@ -48,10 +48,11 @@ async function handleUserSignup(req,res) {
     await UserModel.create({
         Email:body.email,
         FullName:body.fullName,
-        Password:hashedPassword
+        Password:hashedPassword,
+        ContactNo:body.contactno
     })
 
-    return res.json({message:'Account Created'})
+    return res.json({success:'Account Created'})
 }
 async function handleUserSignin(req,res) {
     const body=req.body;
@@ -88,8 +89,17 @@ async function handleGetUser(req,res) {
     return res.json({success:'Logged in'});
 }
 
-async function handleExtraDetails(req,res) {
-    
+async function handleLogout(req,res) {
+    const token=req.cookies?.token;
+    if(!token){
+        return res.json({error:'Not Logged in'});
+    }
+    const user=getUser(token);
+    if(!user){
+         return res.json({error:'Not Logged in'});
+    }
+    res.cookie('token','');
+    return res.json({success:'Logged out'})
 }
 
-module.exports={handleVerifyEmail,handleUserSignup,handleUserSignin,handleGetUser,handleExtraDetails}
+module.exports={handleVerifyEmail,handleUserSignup,handleUserSignin,handleGetUser,handleLogout}
