@@ -31,7 +31,7 @@ function setRestaurant(restaurant){
         return null;
     }
     const token=jwt.sign({
-        Image:restaurant.image,
+        Id:restaurant._id,
         Name:restaurant.name,
         Email:restaurant.email,
         Address:restaurant.location

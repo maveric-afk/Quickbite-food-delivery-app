@@ -60,6 +60,7 @@ async function handleRestaurantSignup(req, res) {
     return res.json({success:'Account created'})
 }
 
+
 async function handleVerifyEmail(req, res) {
     const body = req.body;
     const otp = Math.floor(Math.random() * 9999) + 1000;
@@ -91,7 +92,8 @@ async function handleGetRestaurant(req,res) {
     if(!restaurant){
         return res.json({error:'Not logged in'});
     }
-    return res.json({success:'Logged in',restaurant:restaurant});
+    const restaurantData=await restaurantModel.find({_id:restaurant.Id});
+    return res.json({success:'Logged in',restaurant:restaurantData[0]});
 }
 
 async function handleLogout(req,res) {

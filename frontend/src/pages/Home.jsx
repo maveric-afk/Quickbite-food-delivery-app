@@ -53,23 +53,6 @@ const Home = () => {
             </motion.div>
           </div>
 
-          <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 items-center mt-8'>
-            <FoodCard
-              imageSrc={'/dummy1.jpg'}
-              imageAlt='dummyfood'
-              name='Paneer tikka roll'
-              type={'veg'}
-              category={'rolls'}
-              rating={4}
-            />
-            <RestaurantCard
-              imageSrc={'/dummy2.jpg'}
-              imageAlt='dummyrestaurant'
-              name='DCT Cafe'
-              location='Kamla Nagar'
-              rating={3.5}
-            />
-          </div>
 
           {/* <div className='absolute bottom-0'>
       <Footer/>

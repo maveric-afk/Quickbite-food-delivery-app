@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react"
 import { NavLink,useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
+import api from "../api/axios"
+import {toast} from 'react-hot-toast'
 import { Menu, X, MapPin, ArrowLeft,Clock, CheckCircle, XCircle, Leaf, Flame } from "lucide-react"
 
 export default function RestaurantDashboard() {
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [loggedIn,setLoggedIn]=useState(false)
+  const [restaurant,setRestaurant]=useState({});
 
   const navigate=useNavigate()
 
@@ -20,6 +24,24 @@ export default function RestaurantDashboard() {
     },
   }
   
+
+  useEffect(()=>{
+      api.get('/api/restaurant')
+      .then((res)=>{
+          if(res.data.success){
+              setLoggedIn(true);
+              setRestaurant(res.data.restaurant);
+          }
+          else{
+            toast.error(res.data.error);
+            navigate('/login')
+          }
+      })
+      .catch((e)=>{
+          console.log(e)
+      })
+    },[])
+
   return (
     <motion.div 
     variants={containerVariants} initial="hidden" animate="visible"
@@ -38,22 +60,21 @@ export default function RestaurantDashboard() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 animate-fade-in">
           <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
             {/* Restaurant Image */}
-            <div className="flex-shrink-0">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 shadow-lg flex items-center justify-center">
-                <span className="text-5xl">🍽️</span>
-              </div>
+            <div>
+              <img 
+              className="rounded-2xl h-[10rem] md:h-[15rem]"
+              src={`${import.meta.env.VITE_API_BASE_URL}/${restaurant.image}`} alt="Restaurant Image" />
             </div>
 
             {/* Restaurant Info */}
             <div className="flex-1">
-              <h1 className="text-4xl font-bold text-black mb-2">The Golden Fork</h1>
+              <h1 className="text-4xl font-bold text-black mb-2">{restaurant.name}</h1>
               <div className="flex items-center gap-2 text-gray-600 mb-4">
                 <MapPin size={18} className="text-orange-600" />
-                <p className="text-lg">123 Main Street, Downtown, City 12345</p>
+                <p className="text-lg">{restaurant.location}</p>
               </div>
               <p className="text-gray-500 text-base leading-relaxed max-w-2xl">
-                Premium dining experience with authentic cuisine and exceptional service. Open daily from 11 AM to 11
-                PM.
+                Premium dining experience with authentic cuisine and exceptional service.
               </p>
             </div>
           </div>

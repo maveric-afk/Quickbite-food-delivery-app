@@ -3,6 +3,7 @@ const mongoose=require('mongoose');
 const userRouter=require('./Routes/user')
 const restaurantRouter=require('./Routes/restaurant')
 const {handleRestaurantSignup}=require('./controllers/restaurant')
+const {handleAddNewItems}=require('./controllers/fooditem')
 const {connectToDB}=require('./connection')
 const cors=require('cors');
 const cookieparser=require('cookie-parser')
@@ -54,6 +55,7 @@ app.use('/api/user',userRouter);
 app.use('/api/restaurant',restaurantRouter);
 
 app.post('/api/restaurant/signup',upload.single('image'),handleRestaurantSignup)
+app.post('/api/restaurant/:id/newitem',upload.single('image'),handleAddNewItems)
 
 
 app.listen(PORT,()=>{

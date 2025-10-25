@@ -9,4 +9,5 @@ router.get('/logout',handleLogout)
 router.post('/verifyemail',handleVerifyEmail)
 router.post('/signin',handleRestaurantSignin)
 
+
 module.exports=router

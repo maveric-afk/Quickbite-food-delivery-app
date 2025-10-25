@@ -1,38 +1,25 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
-import { Upload ,ArrowLeft} from "lucide-react"
+import { Upload, ArrowLeft } from "lucide-react"
+import { toast } from 'react-hot-toast'
+import api from "../api/axios"
 
-const categories = ["Pizza", "Burger", "Dessert", "Drinks", "Snacks", "Salad", "Pasta"]
+const categories = ["Pizza", "Burger", "Dessert", "Drinks", "Snacks", "Salad"]
 
 export default function ItemRegister() {
-  const [imagePreview, setImagePreview] = useState(null)
+  const [itemImage, setItemImage] = useState(null)
+  const [loggedIn, setLoggedIn] = useState(false)
+  const [restaurant, setRestaurant] = useState({});
+
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
     reset,
   } = useForm()
 
-  const itemImage = watch("itemImage")
-
-  // Handle image preview
-  const handleImageChange = (e) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setImagePreview(reader.result)
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
-  const onSubmit = (data) => {
-    
-  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -71,15 +58,52 @@ export default function ItemRegister() {
     },
   }
 
+  const navigate = useNavigate();
+  useEffect(() => {
+    api.get('/api/restaurant')
+      .then((res) => {
+        if (res.data.success) {
+          setLoggedIn(true);
+          setRestaurant(res.data.restaurant);
+        }
+        else {
+          toast.error(res.data.error);
+          navigate('/login');
+        }
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }, [])
+
+
+  const onSubmit = async (data) => {
+   data.image=itemImage
+   console.log(data);
+   api.post(`/api/restaurant/${restaurant._id}/newitem`,data,{
+    headers:{'Content-Type':'multipart/form-data'}
+   })
+   .then((res)=>{
+    if(res.data.success){
+      toast.success(res.data.success);
+    }
+   })
+   .catch((err)=>{
+    console.log(err);
+   })
+
+   reset();
+  }
+
   return (
     <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
 
-        <NavLink 
-            to='/dashboard'
-            className='absolute flex items-center top-4 right-4  text-orange-600 border-2 rounded-2xl py-2 px-4 hover:border-orange-500 border-orange-600 duration-200'>
-                <ArrowLeft className="h-5 w-5" />
-                DashBoard
-            </NavLink>
+      <NavLink
+        to='/dashboard'
+        className='absolute flex items-center top-4 right-4  text-orange-600 border-2 rounded-2xl py-2 px-4 hover:border-orange-500 border-orange-600 duration-200'>
+        <ArrowLeft className="h-5 w-5" />
+        DashBoard
+      </NavLink>
 
       <motion.div className="max-w-4xl mx-auto" variants={containerVariants} initial="hidden" animate="visible">
         {/* Header with animated underline */}
@@ -96,6 +120,7 @@ export default function ItemRegister() {
 
         {/* Form Container */}
         <motion.form
+          encType="multipart/form-data"
           onSubmit={handleSubmit(onSubmit)}
           className="bg-white rounded-2xl shadow-lg p-8 sm:p-10"
           variants={itemVariants}
@@ -191,7 +216,7 @@ export default function ItemRegister() {
 
             {/* Discount Price */}
             <motion.div variants={itemVariants}>
-              <label className="block text-sm font-semibold text-black mb-2">Discount Price (Optional)</label>
+              <label className="block text-sm font-semibold text-black mb-2">Discount Price</label>
               <input
                 type="number"
                 placeholder="Enter discount price"
@@ -206,44 +231,14 @@ export default function ItemRegister() {
           </div>
 
           {/* Image Upload Field */}
-          <motion.div className="mb-8" variants={itemVariants}>
-            <label className="block text-sm font-semibold text-black mb-3">
-              Item Image <span className="text-orange-600">*</span>
-            </label>
-            <div className="relative">
-              <input
-                type="file"
-                accept="image/*"
-                {...register("itemImage", {
-                  required: "Item image is required",
-                })}
-                onChange={handleImageChange}
-                className="hidden"
-                id="image-input"
-              />
-              <label
-                htmlFor="image-input"
-                className="flex flex-col items-center justify-center w-full px-6 py-8 border-2 border-dashed border-orange-600 rounded-xl cursor-pointer hover:bg-orange-50 transition-colors"
-              >
-                {imagePreview ? (
-                  <div className="text-center">
-                    <img
-                      src={imagePreview || "/placeholder.svg"}
-                      alt="Preview"
-                      className="max-h-40 mx-auto mb-3 rounded-lg"
-                    />
-                    <p className="text-sm text-orange-600 font-medium">Click to change image</p>
-                  </div>
-                ) : (
-                  <div className="text-center">
-                    <Upload className="w-10 h-10 text-orange-600 mx-auto mb-2" />
-                    <p className="text-sm font-medium text-black">Click to upload or drag and drop</p>
-                    <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 10MB</p>
-                  </div>
-                )}
-              </label>
-            </div>
-            {errors.itemImage && <p className="text-red-500 text-sm mt-1">{errors.itemImage.message}</p>}
+          
+          <motion.div>
+            <input 
+            required
+            type="file"
+            onChange={(e)=>setItemImage(e.target.files[0])}
+            placeholder="Item image"
+             />
           </motion.div>
 
           {/* Submit Button */}

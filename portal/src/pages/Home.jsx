@@ -9,6 +9,8 @@ import {toast} from 'react-hot-toast'
 
 export default function AdminHome() {
     const [loggedIn,setLoggedIn]=useState(false)
+    const [restaurant,setRestaurant]=useState({});
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -74,6 +76,7 @@ export default function AdminHome() {
     .then((res)=>{
         if(res.data.success){
             setLoggedIn(true);
+            setRestaurant(res.data.restaurant);
         }
     })
     .catch((e)=>{
