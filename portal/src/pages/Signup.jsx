@@ -5,12 +5,14 @@ import { NavLink ,useNavigate} from "react-router-dom"
 import {ArrowLeft} from 'lucide-react'
 import {toast} from 'react-hot-toast'
 import api from '../api/axios'
+import { useEffect } from "react"
 
 export default function Signup() {
     const [clicked,setClicked]=useState(false)
     const [emailverified,setEmailverified]=useState(false)
     const [userdata,setUserdata]=useState({})
     const [otp,setOtp]=useState(null)
+    const [restaurantImage,setRestaurantImage]=useState(null)
     const [realotp,setRealotp]=useState(null)
 
   const {
@@ -54,7 +56,17 @@ export default function Signup() {
    e.preventDefault();
    if(Number(otp)===Number(realotp)){
     setEmailverified(true);
-    api.post('/api/restaurant/signup',userdata)
+    
+    const formdata=new FormData();
+    formdata.append('name',userdata.name);
+    formdata.append('email',userdata.email);
+    formdata.append('password',userdata.password);
+    formdata.append('address',userdata.address);
+    formdata.append('image',restaurantImage);
+
+    api.post('/api/restaurant/signup',formdata,{
+      headers:{'Content-Type':'multipart/form-data'}
+    })
     .then((res)=>{
         toast.success(res.data.success);
         navigate('/login')
@@ -71,7 +83,7 @@ export default function Signup() {
   const onSubmit = async (data) => {
     setClicked(true)
     setUserdata(data)
-
+    
     api.post('/api/restaurant/verifyemail',data)
     .then((res)=>{
         setRealotp(res.data.otp);
@@ -83,6 +95,7 @@ export default function Signup() {
 
     reset();
   }
+
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4 py-8">
@@ -242,11 +255,8 @@ export default function Signup() {
            {/*image*/}
           <motion.div variants={itemVariants}>
             <input
-              {...register("image", {
-                required: "Image is required",
-              })}
+              onChange={(e)=>setRestaurantImage(e.target.files[0])}
               type="file"
-              placeholder="Restaurant Image"
               className="w-full p-8 bg-gray-200 cursor-pointer text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-600 transition-all"
             />
           </motion.div>

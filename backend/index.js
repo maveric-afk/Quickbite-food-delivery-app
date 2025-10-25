@@ -2,10 +2,13 @@ const express=require('express');
 const mongoose=require('mongoose');
 const userRouter=require('./Routes/user')
 const restaurantRouter=require('./Routes/restaurant')
+const {handleRestaurantSignup}=require('./controllers/restaurant')
 const {connectToDB}=require('./connection')
 const cors=require('cors');
 const cookieparser=require('cookie-parser')
-const dotenv=require('dotenv')
+const multer=require('multer')
+const dotenv=require('dotenv');
+const { db } = require('./Models/RestaurantModel');
 
 dotenv.config()
 
@@ -21,7 +24,9 @@ connectToDB('mongodb://127.0.0.1:27017/quickbite')
 
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
+app.use('/uploads',express.static('uploads'));
 app.use(cookieparser());
+
 
 const allowedOrigins=[
     'http://localhost:5173',
@@ -34,8 +39,22 @@ app.use(cors(
   }
 ));
 
+const storage=multer.diskStorage({
+    destination:function(req,file,cb){
+        return cb(null,'./uploads')
+    },
+    filename:function(req,file,cb){
+        return cb(null,`${Date.now()}-${file.originalname}`)
+    }
+})
+
+const upload=multer({storage:storage})
+
 app.use('/api/user',userRouter);
 app.use('/api/restaurant',restaurantRouter);
+
+app.post('/api/restaurant/signup',upload.single('image'),handleRestaurantSignup)
+
 
 app.listen(PORT,()=>{
     console.log(`Server started at Port ${PORT}`);

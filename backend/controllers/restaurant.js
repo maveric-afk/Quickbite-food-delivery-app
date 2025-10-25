@@ -4,12 +4,12 @@ const bcrypt=require('bcrypt')
 const {setRestaurant,getRestaurant}=require('../Authentication/jwtAuth')
 
 const transporter = nodemailer.createTransport({
-    secure: true,
+    secure: false,
     host: 'smtp.gmail.com',
-    port: 465,
+    port: 587,
     auth: {
         user: 'guptachirag965@gmail.com',
-        pass: 'mbehksbqxpdtuuvy'
+        pass: 'tbeckbjmzmrabhmf'
     }
 })
 
@@ -45,10 +45,12 @@ async function handleRestaurantSignin(req, res) {
 return res.json({success:'Logged in'})
 }
 
+
 async function handleRestaurantSignup(req, res) {
     const body=req.body;
     const hashedPassword=await bcrypt.hash(body.password,10);
     await restaurantModel.create({
+        image:req.file.path,
         name:body.name,
         email:body.email,
         password:hashedPassword,
@@ -89,7 +91,7 @@ async function handleGetRestaurant(req,res) {
     if(!restaurant){
         return res.json({error:'Not logged in'});
     }
-    return res.json({success:'Logged in'});
+    return res.json({success:'Logged in',restaurant:restaurant});
 }
 
 async function handleLogout(req,res) {
