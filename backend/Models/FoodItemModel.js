@@ -5,6 +5,10 @@ const fooditemSchema=new mongoose.Schema({
         type:String,
         required:true
     },
+    name:{
+        type:String,
+        required:true,
+    },
     description:{
         type:String,
         required:true,
@@ -23,10 +27,6 @@ const fooditemSchema=new mongoose.Schema({
     },
     rating:{
         type:Number,
-    },
-    stock:{
-        type:Number,
-        required:true,
     },
     discountprice:{
         type:Number,

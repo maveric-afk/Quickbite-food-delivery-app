@@ -32,10 +32,12 @@ const UserSchema=new mongoose.Schema({
     },
     LiveOrders:[{
         type:mongoose.Schema.Types.ObjectId,
+        ref:'fooditems',
         
     }],
     PastOrders:[{
         type:mongoose.Schema.Types.ObjectId,
+        ref:'fooditems',
         
     }]
 },{timestamps:true})

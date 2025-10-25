@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Signup from './pages/Signup'
 import Signin from './pages/Signin'
 import RestaurantDashBoard from './pages/RestaurantDashBoard'
+import ItemRegister from './pages/ItemRegister'
 import {Toaster} from 'react-hot-toast'
 
 const router=createBrowserRouter([
@@ -30,6 +31,12 @@ const router=createBrowserRouter([
     path:'/dashboard',
     element:<div>
       <RestaurantDashBoard/>
+    </div>
+  },
+  {
+    path:'/newitem',
+    element:<div>
+      <ItemRegister/>
     </div>
   }
 ])
