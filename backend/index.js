@@ -2,6 +2,7 @@ const express=require('express');
 const mongoose=require('mongoose');
 const userRouter=require('./Routes/user')
 const restaurantRouter=require('./Routes/restaurant')
+const fooditemRouter=require('./Routes/fooditem')
 const {handleRestaurantSignup}=require('./controllers/restaurant')
 const {handleAddNewItems}=require('./controllers/fooditem')
 const {connectToDB}=require('./connection')
@@ -53,6 +54,7 @@ const upload=multer({storage:storage})
 
 app.use('/api/user',userRouter);
 app.use('/api/restaurant',restaurantRouter);
+app.use('/api/fooditem',fooditemRouter);
 
 app.post('/api/restaurant/signup',upload.single('image'),handleRestaurantSignup)
 app.post('/api/restaurant/:id/newitem',upload.single('image'),handleAddNewItems)

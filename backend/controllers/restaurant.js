@@ -109,4 +109,15 @@ async function handleLogout(req,res) {
     return res.json({success:'Logged out'})
 }
 
-module.exports = { handleRestaurantSignin, handleRestaurantSignup, handleVerifyEmail,handleGetRestaurant,handleLogout }
+async function handleGetAllRestaurants(req,res) {
+    const allRestaurants=await restaurantModel.find({});
+    return res.json({allRestaurants:allRestaurants})
+}
+
+async function handleGetRestaurantWithId(req,res) {
+    const id=req.params?.id;
+    const restaurant=await restaurantModel.find({_id:id});
+    return res.json({restaurant:restaurant[0]})
+}
+
+module.exports = { handleRestaurantSignin, handleGetRestaurantWithId,handleRestaurantSignup, handleVerifyEmail,handleGetRestaurant,handleLogout ,handleGetAllRestaurants}

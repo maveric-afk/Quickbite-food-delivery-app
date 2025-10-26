@@ -6,38 +6,45 @@ import Signin from './pages/Signin'
 import Signup from './pages/Signup'
 import Profile from './pages/Profile'
 import Restaurants from './pages/Restaurants'
+import RestaurantItems from './pages/RestaurantItems'
 import Menu from './pages/Menu'
-import {Toaster} from 'react-hot-toast'
-import {createBrowserRouter,RouterProvider} from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-const router=createBrowserRouter([
+const router = createBrowserRouter([
   {
-    path:'/',
-    element:<Home/>
+    path: '/',
+    element: <Home />
   },
   {
-    path:'/help',
-    element:<Help/>
+    path: '/help',
+    element: <Help />
   },
   {
-    path:'/restaurants',
-    element:<Restaurants/>
+    path: '/restaurants',
+    element: <Restaurants/>,
   },
   {
-    path:'/signin',
-    element:<Signin/>
+    path: '/restaurants/:id',
+    element: <div>
+      <RestaurantItems />
+    </div>
   },
   {
-    path:'/signup',
-    element:<Signup/>
+    path: '/signin',
+    element: <Signin />
   },
   {
-    path:'/profile',
-    element:<Profile/>
+    path: '/signup',
+    element: <Signup />
   },
   {
-    path:'/menu',
-    element:<Menu/>
+    path: '/profile',
+    element: <Profile />
+  },
+  {
+    path: '/menu',
+    element: <Menu />
   }
 ])
 
@@ -47,7 +54,7 @@ function App() {
   return (
     <div>
       <RouterProvider router={router}></RouterProvider>
-      <Toaster/>
+      <Toaster />
     </div>
   )
 }

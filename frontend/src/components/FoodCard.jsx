@@ -1,34 +1,62 @@
-import React from "react"
+import React, { useState } from "react"
 import { motion } from "framer-motion"
 import { Star } from "lucide-react"
 
-export default function FoodCard({
-  imageSrc,
-  imageAlt = "",
-  name,
-  type,
-  category,
-  rating = 0,
-  className = "",
-}) {
-  const safeRating = Math.max(0, Math.min(5, Math.floor(rating)))
+export default function FoodCard({name,image,description,category,type,actualPrice,discountPrice}) {
   const isVeg = type?.toLowerCase() === "veg"
+  const [quantity,setQuantity]=useState(0)
+  const [open,setOpen]=useState(false)
 
   return (
-    <motion.div
+    <>
+  {open
+  ?<motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       whileHover={{ scale: 1.03 }}
-      className={`group max-w-sm md:max-w-md w-full overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 text-neutral-100 shadow-sm hover:shadow-md transition-shadow ${className}`}
+      className={`flex flex-col justify-between items-center p-8 max-w-sm md:max-w-md w-full overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 text-neutral-100 shadow-sm hover:shadow-md transition-shadow `}
+      role="article"
+      aria-label={name}
+    >
+
+    <span 
+    onClick={(e)=>setOpen(false)}
+    className="text-white cursor-pointer absolute top-2 right-2 font-bold text-sm md:text-lg">
+      X
+    </span>
+
+    {/* Image section (~60% height; uses fixed heights for consistency) */}
+      <div className="relative h-48 md:h-56 overflow-hidden">
+        <motion.img
+          src={`${import.meta.env.VITE_API_BASE_URL}/${image}`}
+          alt={name}
+          className="h-full w-full object-cover"
+          whileHover={{ scale: 1.1 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        />
+      </div>
+
+      {/* Info section */}
+      <div className="flex flex-col gap-3 p-4">
+          <h3 className="text-lg text-pretty md:text-xl font-bold text-white">{name}</h3>
+          <p className="text-gray-300 text-xs md:text-lg">{description}</p>
+      </div>
+    </motion.div>
+  :<motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      whileHover={{ scale: 1.03 }}
+      className={`group max-w-sm md:max-w-md w-full overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 text-neutral-100 shadow-sm hover:shadow-md transition-shadow `}
       role="article"
       aria-label={name}
     >
       {/* Image section (~60% height; uses fixed heights for consistency) */}
       <div className="relative h-48 md:h-56 overflow-hidden">
         <motion.img
-          src={imageSrc}
-          alt={imageAlt || name}
+          src={`${import.meta.env.VITE_API_BASE_URL}/${image}`}
+          alt={name}
           className="h-full w-full object-cover"
           whileHover={{ scale: 1.1 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
@@ -59,36 +87,50 @@ export default function FoodCard({
           </span>
         </div>
 
-        {/* Category */}
-        {category ? <p className="text-sm text-neutral-400">{category}</p> : null}
+        <div className="flex justify-between items-center">
+          <span>
+            {category ? <p className="text-sm text-neutral-400">{category}</p> : null}
+          </span>
 
-        {/* Rating */}
-        <div className="flex items-center gap-1" aria-label={`Rating: ${safeRating} out of 5`}>
-          {Array.from({ length: 5 }).map((_, i) => {
-            const filled = i < safeRating
-            return (
-              <Star
-                key={i}
-                className={`h-4 w-4 ${filled ? "text-orange-600" : "text-neutral-600"}`}
-                {...(filled ? { fill: "currentColor", strokeWidth: 0 } : { fill: "none", strokeWidth: 2 })}
-                aria-hidden="true"
-              />
-            )
-          })}
-          <span className="sr-only">{safeRating} out of 5 stars</span>
+            <span className="flex items-center gap-1">
+              Rs.
+            {<p className="text-[13px] md:text-[15px] text-white">{discountPrice}</p>}
+            <p className="text-[11px] md:text-[13px] text-neutral-400 line-through">{actualPrice}</p>
+            </span>
         </div>
 
         {/* CTA */}
-        <div className="mt-1">
-          <button
-            type="button"
-            className="inline-flex items-center justify-center rounded-lg bg-orange-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-orange-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-600/50 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
-            aria-label={`View ${name}`}
+        <div className="mt-1 flex justify-between items-center">
+          <div>
+            <button 
+            onClick={(e)=>{setOpen(true)}}
+            className="flex rounded-xl items-center justify-center bg-orange-600 p-2 text-sm font-medium text-white transition-colors">
+              View
+            </button>
+          </div>
+
+          <div className="flex">
+            <span
+            onClick={(e)=>{setQuantity(quantity=>quantity-1)}}
+            className="flex items-center justify-center cursor-pointer bg-orange-600 p-2 text-sm font-medium text-white transition-colors hover:bg-orange-700"
           >
-            View
-          </button>
+            -
+          </span>
+          <span
+            className="flex items-center justify-center bg-orange-600 p-2 text-sm font-medium text-white transition-colors"
+          >
+            {quantity}
+          </span>
+          <span
+            onClick={(e)=>{setQuantity(quantity=>quantity+1)}}
+            className="flex items-center justify-center cursor-pointer bg-orange-600 p-2 text-sm font-medium text-white transition-colors hover:bg-orange-700"
+          >
+            +
+          </span>
+          </div>
         </div>
       </div>
-    </motion.div>
+    </motion.div>}
+    </>
   )
 }

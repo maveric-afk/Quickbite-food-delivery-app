@@ -26,9 +26,6 @@ const fooditemSchema=new mongoose.Schema({
         required:true,
         ref:'restaurants'
     },
-    rating:{
-        type:Number,
-    },
     discountprice:{
         type:Number,
         required:true

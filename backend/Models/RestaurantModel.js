@@ -22,9 +22,6 @@ const restaurantSchema=new mongoose.Schema({
         type:String,
         required:true,
     },
-    rating:{
-        type:Number,
-    },
     fooditems:[
         {
             type:mongoose.Schema.Types.ObjectId,
