@@ -6,7 +6,7 @@ import { Upload, ArrowLeft } from "lucide-react"
 import { toast } from 'react-hot-toast'
 import api from "../api/axios"
 
-const categories = ["Pizza", "Burger", "Dessert", "Drinks", "Snacks", "Salad"]
+const categories = ["Pizza", "Burger", "Dessert", "Drinks", "Snacks","Meal"]
 
 export default function ItemRegister() {
   const [itemImage, setItemImage] = useState(null)
