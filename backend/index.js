@@ -23,7 +23,7 @@ const stripe=require('stripe')(`${process.env.STRIPE_SECRET_KEY}`)
 const app=express();
 const PORT=process.env.PORT || 7000;
 
-connectToDB(`${process.env.MONGO_URI}`)
+connectToDB(process.env.MONGO_URI)
 .then((res)=>{
     console.log('MongoDB connected');
 })
