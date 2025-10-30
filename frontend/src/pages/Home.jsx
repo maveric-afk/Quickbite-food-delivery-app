@@ -9,16 +9,20 @@ import { motion } from 'framer-motion'
 import Footer from '../components/Footer'
 import { useState } from 'react'
 import api from '../api/axios'
+import CartOverlay from '../components/CartOverlay'
 
 const Home = () => {
   const [show, setShow] = useState(true);
   const [allRestaurants,setAllrestaurants]=useState([]);
   const [allfoodItem,setAllfoodItem]=useState([]);
+  const [user,setUser]=useState({});
+  const [cart,setCart]=useState([])
 
   React.useEffect(() => {
     const t = setTimeout(() => setShow(false), 4000);
     return () => clearTimeout(t);
   }, [4000]);
+
 
   useEffect(()=>{
     api.get('/api/restaurant/all')
@@ -40,14 +44,38 @@ const Home = () => {
     })
   },[])
 
+  useEffect(()=>{
+    api.get('/api/user')
+    .then((res)=>{
+      setUser(res.data.user);
+    })
+    .catch((e)=>{
+      console.log(e);
+    })
+  },[])
+
+  useEffect(()=>{
+    setCart(user.Cart);
+  },[user])
+
+  console.log(cart)
+
   return (
     <>
       {show ?
         <LoadingScreen /> :
 
-        <div
+        <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.6 }}
           className='bg-black text-white px-4 overflow-hidden'>
           <Navbar />
+
+          {cart.length!=0
+          ?<CartOverlay/>
+          :<div></div>}
 
           <div>
             <ImageCaraousel />
@@ -101,7 +129,7 @@ const Home = () => {
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
               {allfoodItem.splice(0,21).map((fooditem)=>(
                 <div key={fooditem._id}>
-                  <FoodCard name={fooditem.name} description={fooditem.description} image={fooditem.itemImg} type={fooditem.type} category={fooditem.category} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice}  _id={fooditem._id}/>
+                  <FoodCard id={fooditem._id} name={fooditem.name} description={fooditem.description} image={fooditem.itemImg} type={fooditem.type} category={fooditem.category} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice}  _id={fooditem._id}/>
                 </div>
               ))}
               <div className='bg-gray-950 hover:bg-black rounded-2xl duration-200 flex justify-center items-center'>
@@ -114,7 +142,7 @@ const Home = () => {
           </div>
           
               <Footer/>
-        </div>}
+        </motion.div>}
     </>
   )
 }

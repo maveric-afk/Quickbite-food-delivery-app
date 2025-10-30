@@ -1,7 +1,8 @@
 const nodemailer=require('nodemailer');
 const UserModel=require('../Models/UserModel')
 const bcrypt=require('bcrypt')
-const {setUser,getUser}=require('../Authentication/jwtAuth')
+const {setUser,getUser}=require('../Authentication/jwtAuth');
+const fooditemModel = require('../Models/FoodItemModel');
 
 const transporter=nodemailer.createTransport(
     {
@@ -86,7 +87,8 @@ async function handleGetUser(req,res) {
     if(!user){
         return res.json({error:'Not logged in'});
     }
-    return res.json({success:'Logged in'});
+    const userData=await UserModel.find({_id:user.Id})
+    return res.json({success:'Logged in',user:userData[0]});
 }
 
 async function handleLogout(req,res) {
@@ -102,4 +104,111 @@ async function handleLogout(req,res) {
     return res.json({success:'Logged out'})
 }
 
-module.exports={handleVerifyEmail,handleUserSignup,handleUserSignin,handleGetUser,handleLogout}
+async function handleEditProfileImg(req,res) {
+    const file=req.file;
+    console.log(file)
+    const token=req.cookies?.token;
+     if(!token){
+        return res.json({error:'Not logged in'});
+    }
+    const user=getUser(token);
+    if(!user){
+        return res.json({error:'Not logged in'});
+    }
+
+    await UserModel.updateOne({_id:user.Id},{$set:{ProfileImg:file.path}});
+    return res.json({success:'Profile image changed'});
+}
+
+async function handleAddItemCart(req,res) {
+    const token=req.cookies?.token;
+    const itemId=req.params.id;
+    if(!token){
+        return res.json({error:'Not logged in'})
+    }
+    const user=getUser(token);
+    if(!user){
+        return res.json({error:'Not logged in'})
+    }
+    const userData=await UserModel.find({_id:user.Id});
+    let cart=userData[0].Cart;
+    
+    let contains=false;
+    let quantity;
+    for(let i=0;i<cart.length;i++){
+        if(cart[i].itemId==itemId){
+            contains=true;
+            quantity=cart[i].quantity;
+            break;
+        }
+    }
+
+    if(contains){
+        await UserModel.updateOne({_id:userData[0]._id,'Cart.itemId': itemId},{$inc:{'Cart.$.quantity':1}})
+        quantity++;
+    }
+
+    else
+    {
+            await UserModel.updateOne({_id:userData[0]._id},{$push:{Cart:{itemId:itemId,quantity:1}}});
+            quantity=1;
+    }
+    return res.json({success:'Added',currentQuantity:quantity})
+    
+}
+
+async function handleRemoveItemCart(req,res) {
+    const token=req.cookies?.token;
+    const itemId=req.params.id;
+    if(!token){
+        return res.json({error:"Not logged in"})
+    }
+    const user=getUser(token)
+    if(!user){
+        return res.json({error:"Not logged in"})
+    }
+    const userData=await UserModel.find({_id:user.Id});
+    let cart=userData[0].Cart;
+    let contains=false;
+    let quantity;
+    for(let i=0;i<cart.length;i++){
+        if(cart[i].itemId==itemId){
+            contains=true;
+            quantity=cart[i].quantity;
+            break;
+        }
+    }
+
+    if(contains){
+        if(quantity>1){
+            await UserModel.updateOne({_id:userData[0]._id,'Cart.itemId':itemId},{$inc:{'Cart.$.quantity':-1}})
+            quantity--;
+        }
+        else if(quantity==1){
+            await UserModel.updateOne({_id:userData[0]._id},{$pull:{Cart:{itemId:itemId}}});
+            quantity=0;
+        }
+        return res.json({success:'Removed',currentQuantity:quantity})
+    }
+    else{
+        return res.json({null:'Item not added yet',currentQuantity:0})
+    }
+}
+
+async function handleEditUserAddress(req,res) {
+    const body=req.body;
+    const token=req.cookies?.token;
+    if(!token){
+        return res.json({error:"Not logged in"})
+    }
+    const user=getUser(token);
+    if(!user){
+        return res.json({error:"Not logged in"})
+    }
+    const userData=await UserModel.find({_id:user.Id});
+    await UserModel.updateOne({_id:user.Id},{$set:{Address:body.address}})
+    return res.json({success:"Details updated"})
+}
+
+
+module.exports={handleVerifyEmail,handleUserSignup,handleUserSignin,handleGetUser,handleLogout,handleEditProfileImg,handleRemoveItemCart,handleAddItemCart,handleEditUserAddress}

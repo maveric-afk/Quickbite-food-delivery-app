@@ -3,6 +3,10 @@ import api from '../api/axios'
 import Navbar from '../components/Navbar'
 import FoodCard from '../components/FoodCard'
 import Footer from '../components/Footer'
+import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import { motion } from 'framer-motion'
+
 
 const Menu = () => {
   const [allfoodItem,setAllfoodItem]=useState([])
@@ -16,6 +20,17 @@ const Menu = () => {
 
   const categories=["All","Pizzas", "Burgers", "Desserts", "Drinks", "Snacks","Meals"];
 
+const navigate=useNavigate();
+
+useEffect(()=>{
+api.get('/api/user/')
+.then((res)=>{
+  if(res.data.error){
+    toast.error(res.data.error);
+    navigate('/signin');
+  }
+})
+},[])
 
   useEffect(()=>{
       api.get('/api/fooditem/all')
@@ -50,6 +65,10 @@ const Menu = () => {
     useEffect(()=>{
       api.get('/api/fooditem/desserts')
       .then((res)=>{
+        if(res.data.loginError){
+                toast.error(res.data.loginError);
+                navigate('/signin');
+              }
         setDesserts(res.data.Desserts);
       })
       .catch((e)=>{
@@ -87,8 +106,32 @@ const Menu = () => {
       })
     },[])
 
+    const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3,
+      },
+    },
+  }
+
+   const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
+  }
   return (
-    <section className="bg-black px-4 pt-4">
+    <motion.section 
+    initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.6 }}
+    className="bg-black px-4 pt-4">
      <Navbar/>
 
     {/* Header */}
@@ -99,96 +142,120 @@ const Menu = () => {
         <p className="text-gray-400 text-lg">Discover amazing food with a top-class menu</p>
       </div>
 
-      <div className='flex flex-col lg:flex-row gap-2 p-2 border border-white justify-evenly my-8 bg-gray-950 rounded-xl'>
+      <motion.div 
+      variants={containerVariants}
+      className='flex flex-col lg:flex-row gap-2 p-2 border border-white justify-evenly my-8 bg-gray-950 rounded-xl'>
       {categories.map((cat,index)=>(
-        <span 
+        <motion.span 
+        variants={itemVariants}
         key={index}
         className={`cursor-pointer px-4 py-2 transition-all duration-300 rounded-2xl ${cat==category? 'bg-white text-black shadow-sm shadow-black' : 'text-white bg-gray-950'}`}
         onClick={(e)=>{setCategory(cat)}}>
           {cat}
-        </span>
+        </motion.span>
       ))}
-      </div>
+      </motion.div>
 
       {category=='All'
-          ?<div 
+          ?<motion.div 
+          variants={containerVariants}
           className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {allfoodItem.map((fooditem)=>(
-            <div key={fooditem._id}>
-              <FoodCard name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
-            </div>
+            <motion.div 
+            variants={itemVariants}
+            key={fooditem._id}>
+              <FoodCard id={fooditem._id} name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
+            </motion.div>
           ))}
-          </div>
+          </motion.div>
           :<div></div>}
 
           {category=='Pizzas'
-          ?<div 
+          ?<motion.div 
+          variants={containerVariants}
           className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {pizzas.map((fooditem)=>(
-            <div key={fooditem._id}>
-              <FoodCard name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
-            </div>
+            <motion.div 
+            variants={itemVariants}
+            key={fooditem._id}>
+              <FoodCard id={fooditem._id} name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
+            </motion.div>
           ))}
-          </div>
+          </motion.div>
           :<div></div>}
 
           {category=='Burgers'
-          ?<div 
+          ?<motion.div 
+          variants={containerVariants}
           className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {burgers.map((fooditem)=>(
-            <div key={fooditem._id}>
-              <FoodCard name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
-            </div>
+            <motion.div 
+            variants={itemVariants}
+            key={fooditem._id}>
+              <FoodCard id={fooditem._id} name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
+            </motion.div>
           ))}
-          </div>
+          </motion.div>
           :<div></div>}
 
           {category=='Desserts'
-          ?<div 
+          ?<motion.div 
+          variants={containerVariants}
           className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {desserts.map((fooditem)=>(
-            <div key={fooditem._id}>
-              <FoodCard name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
-            </div>
+            <motion.div 
+            variants={itemVariants}
+            key={fooditem._id}>
+              <FoodCard id={fooditem._id} name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
+            </motion.div>
           ))}
-          </div>
+          </motion.div>
           :<div></div>}
 
           {category=='Drinks'
-          ?<div 
+          ?<motion.div 
+          variants={containerVariants}
           className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {drinks.map((fooditem)=>(
-            <div key={fooditem._id}>
-              <FoodCard name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
-            </div>
+            <motion.div 
+            variants={itemVariants}
+            key={fooditem._id}>
+              <FoodCard id={fooditem._id} name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
+            </motion.div>
           ))}
-          </div>
+          </motion.div>
           :<div></div>}
 
           {category=='Snacks'
-          ?<div 
+          ?<motion.div 
+          variants={containerVariants}
           className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {snacks.map((fooditem)=>(
-            <div key={fooditem._id}>
-              <FoodCard name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
-            </div>
+            <motion.div 
+            variants={itemVariants}
+            key={fooditem._id}>
+              <FoodCard id={fooditem._id} name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
+            </motion.div>
           ))}
-          </div>
+          </motion.div>
           :<div></div>}
 
           {category=='Meals'
-          ?<div 
+          ?<motion.div
+          variants={containerVariants} 
           className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {meals.map((fooditem)=>(
-            <div key={fooditem._id}>
-              <FoodCard name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
-            </div>
+            <motion.div 
+            variants={itemVariants}
+            key={fooditem._id}>
+              <FoodCard id={fooditem._id} name={fooditem.name} image={fooditem.itemImg} description={fooditem.description} actualPrice={fooditem.actualprice} discountPrice={fooditem.discountprice} category={fooditem.category} type={fooditem.type}/>
+            </motion.div>
           ))}
-          </div>
+          </motion.div>
           :<div></div>}
 
           <Footer/>
-    </section>
+    </motion.section>
   )
 }
 

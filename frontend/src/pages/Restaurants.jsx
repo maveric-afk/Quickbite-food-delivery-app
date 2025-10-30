@@ -1,12 +1,25 @@
 import React, { useState,useEffect } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import api from '../api/axios'
 import RestaurantCard from '../components/RestaurantCard'
 import Footer from '../components/Footer'
+import toast from 'react-hot-toast'
+
 
 const Restaurants = () => {
   const [allRestaurants,setAllrestaurants]=useState([])
+
+  const navigate=useNavigate()
+  useEffect(()=>{
+api.get('/api/user/')
+.then((res)=>{
+  if(res.data.error){
+    toast.error(res.data.error);
+    navigate('/signin');
+  }
+})
+},[])
 
     useEffect(()=>{
     api.get('/api/restaurant/all')

@@ -1,7 +1,8 @@
 const express=require('express')
 const {handleRestaurantSignin,handleVerifyEmail,handleGetRestaurant,handleLogout,handleGetAllRestaurants,handleGetRestaurantWithId}=require('../controllers/restaurant')
 const router=express.Router();
-const {LoggedinOnly}=require('../middlewares/restaurant')
+const {LoggedinRestaurantOnly}=require('../middlewares/restaurant')
+const {LoggedinUserOnly}=require('../middlewares/user')
 
 router.get('/',handleGetRestaurant)
 router.get('/logout',handleLogout)

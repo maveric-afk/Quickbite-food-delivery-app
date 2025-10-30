@@ -15,6 +15,7 @@ const links = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [user,setUser]=useState({})
   const [loggedIn,setLoggedIn]=useState(false)
 
   const toggle = () => setOpen((v) => !v);
@@ -35,6 +36,7 @@ export default function Navbar() {
     api.get('/api/user')
     .then((res)=>{
       if(res.data.success){
+        setUser(res.data.user)
         setLoggedIn(true);
       }
     })
@@ -113,7 +115,7 @@ export default function Navbar() {
               <NavLink
                 to='/profile'
               >
-               <img src="/Dummyavatar.jpg" alt="profileImage" className="h-10 w-10 rounded-full" />
+               <img src={`${import.meta.env.VITE_API_BASE_URL}/${user.ProfileImg}` || `Dummyavatar.jpg`} alt="profileImage" className="h-10 w-10 rounded-full" />
               </NavLink>
               <motion.span
                 variants={{

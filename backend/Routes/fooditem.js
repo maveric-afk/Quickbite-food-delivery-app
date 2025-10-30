@@ -1,4 +1,4 @@
-const express=require('express')
+const express=require('express');
 const {handleGetAllFooditem,handleGetBurgers,handleGetDesserts,handleGetDrinks,handleGetMeals,handleGetPizzas,handleGetSnacks}=require('../controllers/fooditem')
 
 const router=express.Router();

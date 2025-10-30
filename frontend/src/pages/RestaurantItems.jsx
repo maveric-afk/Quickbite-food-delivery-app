@@ -1,16 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams,useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar';
 import {MapPin} from 'lucide-react'
 import api from '../api/axios';
 import FoodCard from '../components/FoodCard';
 import Footer from '../components/Footer';
+import toast from 'react-hot-toast';
 
 
 const RestaurantItems = () => {
     const [restaurant,setRestaurant]=useState({});
     const [fooditems,setFooditems]=useState([]);
     const {id}=useParams();
+
+    const navigate=useNavigate();
+
+    useEffect(()=>{
+api.get('/api/user/')
+.then((res)=>{
+  if(res.data.error){
+    toast.error(res.data.error);
+    navigate('/signin');
+  }
+})
+},[])
 
     useEffect(()=>{
     api.get(`/api/restaurant/${id}`)
@@ -41,7 +54,6 @@ const RestaurantItems = () => {
             }
         }
 
-    console.log(foodItemsofRestaurant.current)
 
   return (
     <div className="bg-black px-4 pt-4">
@@ -71,7 +83,7 @@ const RestaurantItems = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 {foodItemsofRestaurant.current.map((item)=>(
                     <div key={item._id}>
-                        <FoodCard name={item.name} image={item.itemImg} description={item.description} type={item.type} category={item.category} actualPrice={item.actualprice} discountPrice={item.discountprice}/>
+                        <FoodCard id={item._id} name={item.name} image={item.itemImg} description={item.description} type={item.type} category={item.category} actualPrice={item.actualprice} discountPrice={item.discountprice}/>
                     </div>
             ))}
             </div>

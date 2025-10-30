@@ -1,8 +1,12 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { Phone, Mail, MessageCircle, ChevronDown } from "lucide-react"
-import { useState } from "react"
+import { useState ,useEffect} from "react"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
+import api from "../api/axios"
+import { useNavigate } from "react-router-dom"
+import toast from "react-hot-toast"
+
 const faqs = [
   {
     question: "How can I track my order?",
@@ -67,8 +71,25 @@ const itemVariants = {
 export default function Help() {
   const [openIndex, setOpenIndex] = useState(0)
 
+  const navigate=useNavigate();
+
+  useEffect(()=>{
+  api.get('/api/user/')
+  .then((res)=>{
+    if(res.data.error){
+      toast.error(res.data.error);
+      navigate('/signin');
+    }
+  })
+  },[])
+
   return (
-    <div className="min-h-screen bg-black p-2">
+    <motion.div
+    initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.6 }}
+    className="min-h-screen bg-black p-2">
       <Navbar/>
 
       {/* Header Section */}
@@ -213,6 +234,6 @@ export default function Help() {
 
       {/* Footer Section */}
      <Footer/>
-    </div>
+    </motion.div>
   )
 }

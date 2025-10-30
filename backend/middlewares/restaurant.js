@@ -1,7 +1,7 @@
 const {getRestaurant}=require('../Authentication/jwtAuth')
 
 
-function LoggedinOnly(req,res,next) {
+function LoggedinRestaurantOnly(req,res,next) {
   const token=req.cookies?.token;
   if(!token){
     return res.json({loginError:'Not logged in'});
@@ -14,4 +14,4 @@ function LoggedinOnly(req,res,next) {
   next(); 
 }
 
-module.exports={LoggedinOnly}
+module.exports={LoggedinRestaurantOnly}

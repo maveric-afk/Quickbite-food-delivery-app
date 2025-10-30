@@ -1,11 +1,57 @@
 import React, { useState } from "react"
 import { motion } from "framer-motion"
 import { Star } from "lucide-react"
+import { useRef } from "react"
+import { useEffect } from "react"
+import api from "../api/axios"
+import {toast} from 'react-hot-toast'
+import {useNavigate} from 'react-router-dom'
 
-export default function FoodCard({name,image,description,category,type,actualPrice,discountPrice}) {
+export default function FoodCard({id,name,image,description,category,type,actualPrice,discountPrice}) {
   const isVeg = type?.toLowerCase() === "veg"
-  const [quantity,setQuantity]=useState(0)
   const [open,setOpen]=useState(false)
+  const [user,setUser]=useState({});
+  const [cart,setCart]=useState([])
+  const [quantity,setQuantity]=useState(0)
+
+  const navigate=useNavigate()
+  
+  function handleQuantityIncrement(e){
+    api.patch(`/api/user/cart/add/${id}`)
+    .then((res)=>{
+      if(res.data.error){
+        toast.error(res.data.error);
+        navigate('/signin')
+      }
+      setQuantity(res.data.currentQuantity)
+    })
+  }
+
+  function handleQuantityDecrement(e){
+    api.patch(`/api/user/cart/remove/${id}`)
+    .then((res)=>{
+      if(res.data.error){
+        toast.error(res.data.error);
+        navigate('/signin')
+      }
+      else if(res.data.null){
+        toast.error(res.data.null);
+      }
+      setQuantity(res.data.currentQuantity)
+    })
+  }
+
+  useEffect(()=>{
+      api.get('/api/user/')
+      .then((res)=>{
+        setUser(res.data.user);
+      })
+    },[])
+
+    useEffect(()=>{
+      setCart(user.Cart);
+    },[user])
+
 
   return (
     <>
@@ -109,9 +155,9 @@ export default function FoodCard({name,image,description,category,type,actualPri
             </button>
           </div>
 
-          <div className="flex">
+          <div>
             <span
-            onClick={(e)=>{setQuantity(quantity=>quantity-1)}}
+            onClick={handleQuantityDecrement}
             className="flex items-center justify-center cursor-pointer bg-orange-600 p-2 text-sm font-medium text-white transition-colors hover:bg-orange-700"
           >
             -
@@ -122,7 +168,7 @@ export default function FoodCard({name,image,description,category,type,actualPri
             {quantity}
           </span>
           <span
-            onClick={(e)=>{setQuantity(quantity=>quantity+1)}}
+            onClick={handleQuantityIncrement}
             className="flex items-center justify-center cursor-pointer bg-orange-600 p-2 text-sm font-medium text-white transition-colors hover:bg-orange-700"
           >
             +

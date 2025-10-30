@@ -5,12 +5,15 @@ const restaurantRouter=require('./Routes/restaurant')
 const fooditemRouter=require('./Routes/fooditem')
 const {handleRestaurantSignup}=require('./controllers/restaurant')
 const {handleAddNewItems}=require('./controllers/fooditem')
+const {handleEditProfileImg}=require('./controllers/user')
 const {connectToDB}=require('./connection')
 const cors=require('cors');
 const cookieparser=require('cookie-parser')
 const multer=require('multer')
 const dotenv=require('dotenv');
+const {LoggedinUserOnly}=require('./middlewares/user')
 const { db } = require('./Models/RestaurantModel');
+const stripe=require('stripe')("sk_test_51SNoXkRqgyn51fCGuB0UXm0kJxhSWL2SdbDc9UrzneruL6fsdKy2ZPfdl1ic6O93OqZ9GUc9xFqP6hqP67pzZW6c00qEaCE8bm")
 
 dotenv.config()
 
@@ -59,6 +62,33 @@ app.use('/api/fooditem',fooditemRouter);
 app.post('/api/restaurant/signup',upload.single('image'),handleRestaurantSignup)
 app.post('/api/restaurant/:id/newitem',upload.single('image'),handleAddNewItems)
 
+app.patch('/api/user/editprofileimg',upload.single('profileImg'),handleEditProfileImg)
+
+//payment gateway
+app.post('/api/create-checkout-session',async(req,res)=>{
+    const {cartItems}=req.body;
+
+    const lineItems=cartItems.map((item)=>({
+        price_data:{
+            currency:'inr',
+            product_data:{
+                name:item.name,
+            },
+            unit_amount:item.discountprice*100,
+        },
+        quantity:item.quantity,
+    }));
+
+    const session=await stripe.checkout.sessions.create({
+        payment_method_types:["card",'sepa_debit','bancontact'],
+        line_items:lineItems,
+        mode:'payment',
+        success_url:'http://localhost:5173/success',
+        cancel_url:'http://localhost:5173/cancel'
+    });
+
+    return res.json({sessionURL:session.url})
+})
 
 app.listen(PORT,()=>{
     console.log(`Server started at Port ${PORT}`);

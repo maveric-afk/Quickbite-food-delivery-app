@@ -3,7 +3,6 @@ const mongoose=require('mongoose');
 const UserSchema=new mongoose.Schema({
     ProfileImg:{
         type:String,
-        required:false
     },
     FullName:{
         type:String,
@@ -28,18 +27,41 @@ const UserSchema=new mongoose.Schema({
     },
     Address:{
         type:String,
-        required:false,
     },
+    Cart:[
+       {
+        itemId:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'fooditems',
+        },
+        quantity:{
+            type:Number,
+            required:true,
+        }
+       } 
+    ],
     LiveOrders:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'fooditems',
-        
-    }],
+        itemId:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'fooditems',
+        },
+        quantity:{
+            type:Number,
+            required:true,
+        }
+       } 
+    ],
     PastOrders:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'fooditems',
-        
-    }]
+        itemId:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'fooditems',
+        },
+        quantity:{
+            type:Number,
+            required:true,
+        }
+       } 
+    ]
 },{timestamps:true})
 
 const UserModel=mongoose.model('user',UserSchema);

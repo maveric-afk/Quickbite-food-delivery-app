@@ -10,6 +10,9 @@ import RestaurantItems from './pages/RestaurantItems'
 import Menu from './pages/Menu'
 import { Toaster } from 'react-hot-toast'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import CartPage from './pages/CartPage'
+import Success from './pages/Success'
+import Cancel from './pages/Cancel'
 
 const router = createBrowserRouter([
   {
@@ -45,6 +48,22 @@ const router = createBrowserRouter([
   {
     path: '/menu',
     element: <Menu />
+  },
+  {
+    path: '/cart',
+    element: <CartPage />
+  },
+  {
+    path:'/success',
+    element:<div>
+      <Success/>
+    </div>
+  },
+  {
+    path:'/cancel',
+    element:<div>
+      <Cancel/>
+    </div>
   }
 ])
 
