@@ -12,6 +12,7 @@ out/
 # Env
 backend/.env
 frontend/.env
+portal/.env
 .env.local
 .env.*.local
 
