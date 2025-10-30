@@ -66,7 +66,7 @@ export default function Navbar() {
     <nav
       role="navigation"
       aria-label="Main navigation"
-      className="w-full bg-black text-white shadow-md sticky top-0 z-50"
+      className="w-full p-2 bg-black text-white shadow-md sticky top-0 z-50"
     >
       {/* Top bar */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -77,7 +77,7 @@ export default function Navbar() {
           transition={{ duration: 0.35 }}
           className="flex items-center"
         >
-          <img src="/Quickbite-logo.png" className="h-[5rem] md:h-[7rem] lg:h-[8.5rem]"/>
+          <img src="/Quickbite-logo.png" className="h-[5rem] md:h-[7rem] lg:h-[8.5rem] hover:scale-105 duration-300"/>
         </motion.div>
 
         {/* Desktop nav */}

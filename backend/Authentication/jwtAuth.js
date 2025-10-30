@@ -1,6 +1,4 @@
 const jwt=require('jsonwebtoken');
-const secretUserKey='h6d5j02bdt4aw2u0'
-const secretRestaurantKey='fjdhs843vw483fsf3'
 
 function setUser(user){
     if(!user){
@@ -12,7 +10,7 @@ function setUser(user){
             Name:user.FullName,
             Email:user.Email,
             Number:user.ContactNo,
-        },secretUserKey
+        },process.env.JWT_SECRET_USER_KEY
     );
 
     return token;
@@ -22,7 +20,7 @@ function getUser(token){
     if(!token){
         return null;
     }
-    const user=jwt.verify(token,secretUserKey);
+    const user=jwt.verify(token,process.env.JWT_SECRET_USER_KEY);
     return user;
 }
 
@@ -36,7 +34,7 @@ function setRestaurant(restaurant){
         Name:restaurant.name,
         Email:restaurant.email,
         Address:restaurant.location
-    },secretRestaurantKey);
+    },process.env.JWT_SECRET_RESTAURANT_KEY);
 
     return token;
 }
@@ -46,7 +44,7 @@ function getRestaurant(token){
         return null;
     }
 
-    const restaurant=jwt.verify(token,secretRestaurantKey);
+    const restaurant=jwt.verify(token,process.env.JWT_SECRET_RESTAURANT_KEY);
     return restaurant;
 }
 

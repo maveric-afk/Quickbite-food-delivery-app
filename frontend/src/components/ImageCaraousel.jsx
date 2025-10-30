@@ -51,7 +51,7 @@ export default function ImageCarousel(){
   };
 
   return (
-    <div className="relative rounded-2xl w-full h-[200px] sm:h-[300px] lg:h-[400px] overflow-hidden shadow-2xl bg-muted">
+    <div className="relative rounded-2xl mt-4 sm:mt-8 md:mt-12 w-full h-[200px] sm:h-[300px] lg:h-[400px] overflow-hidden shadow-2xl bg-muted">
       <AnimatePresence mode="wait" custom={1}>
         <motion.div
           key={currentIndex}
