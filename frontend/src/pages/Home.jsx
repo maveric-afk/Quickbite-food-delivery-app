@@ -60,7 +60,6 @@ const Home = () => {
     setCart(user.Cart);
   },[user])
 
-  console.log(cart)
 
   return (
     <>
@@ -75,7 +74,7 @@ const Home = () => {
           className='bg-black text-white px-4 overflow-hidden'>
           <Navbar />
 
-          {cart.length!=0
+          {cart && cart.length!=0
           ?<CartOverlay/>
           :<div></div>}
 
