@@ -88,7 +88,7 @@ export default function CartPage() {
 
   //payment
   async function handlePayment() {
-    const stripe=await loadStripe(import.meta.env.STRIPE_PUBLISHABLE_KEY);
+    const stripe=await loadStripe("pk_test_51SNoXkRqgyn51fCGwCBOOTJloTDsxB5XFoXSSZmE6paBPRfpzPAwaD8Ev3cphgHCcghF3ae7aTL2Tis0FubsO9WX00G7ljOmuE");
     api.post('/api/create-checkout-session',{cartItems:cartItems})
     .then((res)=>{
       if(res.data.sessionURL)

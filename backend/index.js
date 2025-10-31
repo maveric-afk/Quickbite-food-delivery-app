@@ -16,7 +16,7 @@ const { db } = require('./Models/RestaurantModel');
 
 dotenv.config()
 
-const stripe=require('stripe')(process.env.STRIPE_SECRET_KEY)
+const stripe=require('stripe')("sk_test_51SNoXkRqgyn51fCGuB0UXm0kJxhSWL2SdbDc9UrzneruL6fsdKy2ZPfdl1ic6O93OqZ9GUc9xFqP6hqP67pzZW6c00qEaCE8bm")
 
 
 const app=express();
