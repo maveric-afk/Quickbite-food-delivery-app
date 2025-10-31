@@ -93,6 +93,8 @@ app.post('/api/create-checkout-session',async(req,res)=>{
     return res.json({sessionURL:session.url})
 })
 
+console.log(`Stripe secret key:-${process.env.STRIPE_SECRET_KEY},,,smtp user:-${process.env.SMTP_USER},,,smtp pass:-${process.env.SMTP_PASS},,,smtp rest. pass:-${process.env.SMTP_RESTAURANT_PASS}`)
+
 app.listen(PORT,()=>{
     console.log(`Server started at Port ${PORT}`);
 })
