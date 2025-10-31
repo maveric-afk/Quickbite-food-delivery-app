@@ -160,18 +160,18 @@ export default function FoodCard({id,name,image,description,category,type,actual
           <div>
             <span
             onClick={handleQuantityDecrement}
-            className="flex items-center justify-center cursor-pointer bg-orange-600 p-2 text-sm font-medium text-white transition-colors hover:bg-orange-700"
+            className="cursor-pointer bg-orange-600 p-2 text-sm font-medium text-white transition-colors hover:bg-orange-700"
           >
             -
           </span>
           <span
-            className="flex items-center justify-center bg-orange-600 p-2 text-sm font-medium text-white transition-colors"
+            className="bg-orange-600 p-2 text-sm font-medium text-white transition-colors"
           >
             {quantity}
           </span>
           <span
             onClick={handleQuantityIncrement}
-            className="flex items-center justify-center cursor-pointer bg-orange-600 p-2 text-sm font-medium text-white transition-colors hover:bg-orange-700"
+            className="cursor-pointer bg-orange-600 p-2 text-sm font-medium text-white transition-colors hover:bg-orange-700"
           >
             +
           </span>
