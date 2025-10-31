@@ -125,8 +125,8 @@ async function handleGetRestaurantWithId(req, res) {
 async function handleAddingOrders(item, userId) {
     let itemId = item.itemId;
     let quantity = item.quantity;
-    const item = await fooditemModel.find({ _id: itemId });
-    const restaurant = await restaurantModel.find({ _id: item[0].restaurant });
+    const itemData = await fooditemModel.find({ _id: itemId });
+    const restaurant = await restaurantModel.find({ _id: itemData[0].restaurant });
    
     const restaurantOrders = restaurant[0].orders;
     let contains=false;
