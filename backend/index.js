@@ -33,6 +33,45 @@ connectToDB(process.env.MONGO_URI)
 })
 
 app.use(express.urlencoded({extended:false}));
+
+
+//we dont need parsed body for this route
+app.post('/api/stripe-webhook',express.raw({ type: "application/json" }),async(req,res)=>{
+     const sig = req.headers["stripe-signature"];
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, 'whsec_4EUpN9tA17RenMvTwIE69D0h6yXBWN2Q');
+    } catch (err) {
+      console.log("⚠️ Webhook signature verification failed.", err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the event
+    switch (event.type) {
+      case "checkout.session.completed":
+        const session = event.data.object;
+        const userId=session.metadata.userId;
+        console.log("💰 Payment successful!", session);
+        const userData=await UserModel.find({_id:userId})
+        const cart=userData[0].Cart;
+        await UserModel.updateOne({_id:userId},{$set:{Cart:[],LiveOrders:cart}});
+        // You can fulfill the order here
+        break;
+
+      case "payment_intent.payment_failed":
+        const paymentIntent = event.data.object;
+        console.log("❌ Payment failed!", paymentIntent);
+        break;
+
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    res.status(200).send({ received: true });
+
+})
+
 app.use(express.json());
 app.use('/uploads',express.static('uploads'));
 app.use(cookieparser());
@@ -106,41 +145,6 @@ app.post('/api/create-checkout-session',async(req,res)=>{
     return res.json({sessionURL:session.url})
 })
 
-app.post('/api/stripe-webhook',express.raw({ type: "application/json" }),async(req,res)=>{
-     const sig = req.headers["stripe-signature"];
-    let event;
-
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, 'whsec_4EUpN9tA17RenMvTwIE69D0h6yXBWN2Q');
-    } catch (err) {
-      console.log("⚠️ Webhook signature verification failed.", err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    // Handle the event
-    switch (event.type) {
-      case "checkout.session.completed":
-        const session = event.data.object;
-        const userId=session.metadata.userId;
-        console.log("💰 Payment successful!", session);
-        const userData=await UserModel.find({_id:userId})
-        const cart=userData[0].Cart;
-        await UserModel.updateOne({_id:userId},{$set:{Cart:[],LiveOrders:cart}});
-        // You can fulfill the order here
-        break;
-
-      case "payment_intent.payment_failed":
-        const paymentIntent = event.data.object;
-        console.log("❌ Payment failed!", paymentIntent);
-        break;
-
-      default:
-        console.log(`Unhandled event type ${event.type}`);
-    }
-
-    res.status(200).send({ received: true });
-
-})
 
 app.listen(PORT,()=>{
     console.log(`Server started at Port ${PORT}`);
