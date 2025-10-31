@@ -6,9 +6,9 @@ const fooditemModel = require('../Models/FoodItemModel');
 
 const transporter=nodemailer.createTransport(
     {
-        secure:true,
+        secure:false,
         host:'smtp.gmail.com',
-        port:465,
+        port:587,
         auth:{
             user:`${process.env.SMTP_USER}`,
             pass:`${process.env.SMTP_PASS}`
