@@ -4,17 +4,17 @@ const bcrypt=require('bcrypt')
 const {setRestaurant,getRestaurant}=require('../Authentication/jwtAuth')
 
 const transporter = nodemailer.createTransport({
-    secure: false,
-    host: 'smtp.gmail.com',
+    host: 'smtp-relay.brevo.com',
     port: 587,
     auth: {
-        user:"guptachirag965@gmail.com",
-        pass:"tbeckbjmzmrabhmf"
+        user:process.env.SMTP_USER,
+        pass:process.env.SMTP_RESTAURANT_PASS
     }
 })
 
 function sendMail(to, sub, msg) {
     transporter.sendMail({
+        from:`guptachirag965@gmail.com`,
         to: to,
         subject: sub,
         html: msg

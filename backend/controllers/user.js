@@ -6,18 +6,18 @@ const fooditemModel = require('../Models/FoodItemModel');
 
 const transporter=nodemailer.createTransport(
     {
-        secure:false,
-        host:'smtp.gmail.com',
+        host:'smtp-relay.brevo.com',
         port:587,
         auth:{
-            user:"guptachirag965@gmail.com",
-            pass:"pwqufjneklttqzts"
+            user:process.env.SMTP_USER,
+            pass:process.env.SMTP_PASS
         }
     }
 )  
 
 const sendmail=(to,sub,msg)=>{
     transporter.sendMail({
+        from:`guptachirag965@gmail.com`,
         to:to,
         subject:sub,
         html:msg
