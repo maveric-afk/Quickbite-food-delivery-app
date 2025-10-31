@@ -88,7 +88,7 @@ export default function CartPage() {
 
   //payment
   async function handlePayment() {
-    const stripe=await loadStripe(`${import.meta.env.STRIPE_PUBLISHABLE_KEY}`);
+    const stripe=await loadStripe(import.meta.env.STRIPE_PUBLISHABLE_KEY);
     api.post('/api/create-checkout-session',{cartItems:cartItems})
     .then((res)=>{
       if(res.data.sessionURL)
