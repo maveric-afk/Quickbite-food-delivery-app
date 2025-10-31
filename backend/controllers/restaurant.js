@@ -1,20 +1,22 @@
 const restaurantModel = require('../Models/RestaurantModel')
 const nodemailer = require('nodemailer')
-const bcrypt=require('bcrypt')
-const {setRestaurant,getRestaurant}=require('../Authentication/jwtAuth')
+const bcrypt = require('bcrypt')
+const { setRestaurant, getRestaurant } = require('../Authentication/jwtAuth')
+const fooditemModel = require('../Models/FoodItemModel')
+const UserModel = require('../Models/UserModel')
 
 const transporter = nodemailer.createTransport({
     host: 'smtp-relay.brevo.com',
     port: 587,
     auth: {
-        user:process.env.SMTP_USER,
-        pass:process.env.SMTP_RESTAURANT_PASS
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_RESTAURANT_PASS
     }
 })
 
 function sendMail(to, sub, msg) {
     transporter.sendMail({
-        from:`guptachirag965@gmail.com`,
+        from: `guptachirag965@gmail.com`,
         to: to,
         subject: sub,
         html: msg
@@ -24,40 +26,40 @@ function sendMail(to, sub, msg) {
 
 
 async function handleRestaurantSignin(req, res) {
-    const body=req.body;
-    const restaurant=await restaurantModel.find({email:body.email});
-    if(!restaurant[0]){
-        return res.json({error:'No restaurant found'});
+    const body = req.body;
+    const restaurant = await restaurantModel.find({ email: body.email });
+    if (!restaurant[0]) {
+        return res.json({ error: 'No restaurant found' });
     }
-    const matchPassword=await bcrypt.compare(body.password,restaurant[0].password);
-    if(!matchPassword){
-        return res.json({error:'Wrong Credentials'});
+    const matchPassword = await bcrypt.compare(body.password, restaurant[0].password);
+    if (!matchPassword) {
+        return res.json({ error: 'Wrong Credentials' });
     }
 
-    const token=setRestaurant(restaurant[0]);
-    res.cookie('token',token,{
-  httpOnly: true,     
-  secure: true,       
-  sameSite: "none",    
-  maxAge: 1000 * 60 * 60 * 24,
-});
+    const token = setRestaurant(restaurant[0]);
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 1000 * 60 * 60 * 24,
+    });
 
-return res.json({success:'Logged in'})
+    return res.json({ success: 'Logged in' })
 }
 
 
 async function handleRestaurantSignup(req, res) {
-    const body=req.body;
-    const hashedPassword=await bcrypt.hash(body.password,10);
+    const body = req.body;
+    const hashedPassword = await bcrypt.hash(body.password, 10);
     await restaurantModel.create({
-        image:req.file.path,
-        name:body.name,
-        email:body.email,
-        password:hashedPassword,
-        location:body.address
+        image: req.file.path,
+        name: body.name,
+        email: body.email,
+        password: hashedPassword,
+        location: body.address
     })
 
-    return res.json({success:'Account created'})
+    return res.json({ success: 'Account created' })
 }
 
 
@@ -79,45 +81,68 @@ Best regards,<br>
 `
     );
 
-    return res.json({otp:otp})
+    return res.json({ otp: otp })
 }
 
 
-async function handleGetRestaurant(req,res) {
-    const token=req.cookies?.token;
-    if(!token){
-        return res.json({error:'Not logged in'})
+async function handleGetRestaurant(req, res) {
+    const token = req.cookies?.token;
+    if (!token) {
+        return res.json({ error: 'Not logged in' })
     }
-    const restaurant=getRestaurant(token);
-    if(!restaurant){
-        return res.json({error:'Not logged in'});
+    const restaurant = getRestaurant(token);
+    if (!restaurant) {
+        return res.json({ error: 'Not logged in' });
     }
-    const restaurantData=await restaurantModel.find({_id:restaurant.Id});
-    return res.json({success:'Logged in',restaurant:restaurantData[0]});
+    const restaurantData = await restaurantModel.find({ _id: restaurant.Id });
+    return res.json({ success: 'Logged in', restaurant: restaurantData[0] });
 }
 
-async function handleLogout(req,res) {
-    const token=req.cookies?.token;
-    if(!token){
-        return res.json({error:'Not Logged in'});
+async function handleLogout(req, res) {
+    const token = req.cookies?.token;
+    if (!token) {
+        return res.json({ error: 'Not Logged in' });
     }
-    const restaurant=getRestaurant(token);
-    if(!restaurant){
-         return res.json({error:'Not Logged in'});
+    const restaurant = getRestaurant(token);
+    if (!restaurant) {
+        return res.json({ error: 'Not Logged in' });
     }
-    res.cookie('token','');
-    return res.json({success:'Logged out'})
+    res.cookie('token', '');
+    return res.json({ success: 'Logged out' })
 }
 
-async function handleGetAllRestaurants(req,res) {
-    const allRestaurants=await restaurantModel.find({});
-    return res.json({allRestaurants:allRestaurants})
+async function handleGetAllRestaurants(req, res) {
+    const allRestaurants = await restaurantModel.find({});
+    return res.json({ allRestaurants: allRestaurants })
 }
 
-async function handleGetRestaurantWithId(req,res) {
-    const id=req.params?.id;
-    const restaurant=await restaurantModel.find({_id:id});
-    return res.json({restaurant:restaurant[0]})
+async function handleGetRestaurantWithId(req, res) {
+    const id = req.params?.id;
+    const restaurant = await restaurantModel.find({ _id: id });
+    return res.json({ restaurant: restaurant[0] })
 }
 
-module.exports = { handleRestaurantSignin, handleGetRestaurantWithId,handleRestaurantSignup, handleVerifyEmail,handleGetRestaurant,handleLogout ,handleGetAllRestaurants}
+async function handleAddingOrders(item, userId) {
+    let itemId = item.itemId;
+    let quantity = item.quantity;
+    const item = await fooditemModel.find({ _id: itemId });
+    const restaurant = await restaurantModel.find({ _id: item[0].restaurant });
+   
+    const restaurantOrders = restaurant[0].orders;
+    let contains=false;
+    for(let i=0;i<restaurantOrders.length;i++){
+        let someOrder=restaurantOrders[i];
+        if(someOrder.orderedBy==userId){
+            contains=true;
+            break;
+        }
+    }
+    if(contains){
+        await restaurantModel.updateOne({_id:restaurant[0]._id,'orders.orderedBy':userId},{$push:{'orders.$.items':item}})
+    }
+    else{
+        await restaurantModel.updateOne({_id:restaurant[0]._id},{$push:{items:[item],orderedBy:userId}})
+    }
+}
+
+module.exports = { handleRestaurantSignin, handleGetRestaurantWithId, handleRestaurantSignup, handleVerifyEmail, handleGetRestaurant, handleLogout, handleGetAllRestaurants, handleAddingOrders }

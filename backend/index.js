@@ -3,7 +3,7 @@ const mongoose=require('mongoose');
 const userRouter=require('./Routes/user')
 const restaurantRouter=require('./Routes/restaurant')
 const fooditemRouter=require('./Routes/fooditem')
-const {handleRestaurantSignup}=require('./controllers/restaurant')
+const {handleRestaurantSignup,handleAddingOrders}=require('./controllers/restaurant')
 const {handleAddNewItems}=require('./controllers/fooditem')
 const {handleEditProfileImg}=require('./controllers/user')
 const {connectToDB}=require('./connection')
@@ -15,6 +15,8 @@ const {LoggedinUserOnly}=require('./middlewares/user')
 const { db } = require('./Models/RestaurantModel');
 const UserModel = require('./Models/UserModel');
 const { getUser } = require('./Authentication/jwtAuth');
+const restaurantModel = require('./Models/RestaurantModel');
+const fooditemModel = require('./Models/FoodItemModel');
 
 dotenv.config()
 
@@ -56,7 +58,10 @@ app.post('/api/stripe-webhook',express.raw({ type: "application/json" }),async(r
         const userData=await UserModel.find({_id:userId})
         const cart=userData[0].Cart;
         await UserModel.updateOne({_id:userId},{$set:{Cart:[],LiveOrders:cart}});
-        // You can fulfill the order here
+        
+        for(const item of cart){
+            await handleAddingOrders(item,userId);
+        }
         break;
 
       case "payment_intent.payment_failed":
