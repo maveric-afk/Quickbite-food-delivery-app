@@ -124,7 +124,6 @@ async function handleGetRestaurantWithId(req, res) {
 
 async function handleAddingOrders(item, userId) {
     let itemId = item.itemId;
-    let quantity = item.quantity;
     const itemData = await fooditemModel.find({ _id: itemId });
     const restaurant = await restaurantModel.find({ _id: itemData[0].restaurant });
    
@@ -141,7 +140,8 @@ async function handleAddingOrders(item, userId) {
         await restaurantModel.updateOne({_id:restaurant[0]._id,'orders.orderedBy':userId},{$push:{'orders.$.items':item}})
     }
     else{
-        await restaurantModel.updateOne({_id:restaurant[0]._id},{$push:{items:[item],orderedBy:userId}})
+        await restaurantModel.updateOne({_id:restaurant[0]._id},{$push:{orders:{items:[],orderedBy:userId}}});
+        await restaurantModel.updateOne({_id:restaurant[0]._id,'orders.orderedBy':userId},{$push:{'orders.$.items':item}});
     }
 }
 
