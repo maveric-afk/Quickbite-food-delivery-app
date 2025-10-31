@@ -44,11 +44,13 @@ export default function FoodCard({id,name,image,description,category,type,actual
   useEffect(()=>{
       api.get('/api/user/')
       .then((res)=>{
+        if(res.data.user)
         setUser(res.data.user);
       })
     },[])
 
     useEffect(()=>{
+      if(user)
       setCart(user.Cart);
     },[user])
 

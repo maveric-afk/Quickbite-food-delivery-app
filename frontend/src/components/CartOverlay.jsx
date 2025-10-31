@@ -11,6 +11,7 @@ const CartOverlay = () => {
   useEffect(()=>{
     api.get('/api/user')
     .then((res)=>{
+      if(res.data.user)
       setCart(res.data.user.Cart);
     })
     .catch((e)=>{
