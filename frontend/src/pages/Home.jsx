@@ -47,6 +47,7 @@ const Home = () => {
   useEffect(()=>{
     api.get('/api/user')
     .then((res)=>{
+      if(res.data.user)
       setUser(res.data.user);
     })
     .catch((e)=>{
@@ -55,6 +56,7 @@ const Home = () => {
   },[])
 
   useEffect(()=>{
+    if(user)
     setCart(user.Cart);
   },[user])
 
