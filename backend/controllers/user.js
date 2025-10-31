@@ -100,7 +100,12 @@ async function handleLogout(req,res) {
     if(!user){
          return res.json({error:'Not Logged in'});
     }
-    res.cookie('token','');
+     res.cookie('token','',{
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    expires: new Date(0)
+  });
     return res.json({success:'Logged out'})
 }
 
