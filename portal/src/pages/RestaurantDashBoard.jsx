@@ -114,10 +114,10 @@ export default function RestaurantDashboard() {
             <h2 className="text-2xl font-bold text-black">Live Orders</h2>
             <div className="w-3 h-3 bg-red-600 rounded-full animate-pulse shadow-lg shadow-red-600"></div>
           </div>
-          <div className="px-4">
+          <div className="px-1 md:px-4">
         {orders.map((order)=>( 
           <div key={order._id} className="my-2">
-              <OrderCard userId={order.orderedBy} items={order.items} />
+              <OrderCard orderId={order._id} userId={order.orderedBy} items={order.items} />
           </div>
           ))}
           </div>

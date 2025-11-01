@@ -1,8 +1,10 @@
 import { Mail, MapPin, Phone, User } from "lucide-react";
 import api from '../api/axios'
 import { useEffect, useState } from "react";
+import {toast} from 'react-hot-toast'
+import {useNavigate} from 'react-router-dom'
 
-export default function OrderCard({userId,items=[]}) {
+export default function OrderCard({orderId,userId,items=[]}) {
   const [user,setUser]=useState({});
   const [allfoodItems,setAllfoodItems]=useState([])
 
@@ -27,9 +29,21 @@ export default function OrderCard({userId,items=[]}) {
       })
   }, [])
 
-
+  const navigate=useNavigate()
   function handleClearOrder() {
-    
+    api.patch('/api/restaurant/clearorder',{orderId:orderId,userId:userId,items:items})
+    .then((res)=>{
+      if(res.data.error){
+        toast.error(res.data.error);
+        navigate('/login')
+      }
+      else if(res.data.success){
+        toast.success(res.data.success)
+      }
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
   }
 
 
@@ -44,7 +58,7 @@ export default function OrderCard({userId,items=[]}) {
   })
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4">
+    <div className="w-full max-w-5xl mx-auto p-4">
       <div className="bg-gray-200 rounded-lg shadow-sm shadow-black hover:shadow-md transition-shadow duration-300 overflow-hidden">
         {/* Main container - responsive grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
@@ -57,25 +71,30 @@ export default function OrderCard({userId,items=[]}) {
               {OrderedItems.map((item) => (
                 <div
                   key={item._id}
-                  className="flex justify-around items-center p-3 rounded-md hover:bg-gray-50 transition-colors duration-200"
+                  className="flex justify-around gap-2 items-center p-1 rounded-md hover:bg-gray-50 transition-colors duration-200"
                 >
-                  <span className="text-gray-700 text-[12px] md:text-[16px] font-medium">
+                  <div>
+                    <img src={`${import.meta.env.VITE_API_BASE_URL}/${item.itemImg}`} className="h-16 w-16 md:h-28 md:w-28 rounded-2xl" />
+                  </div>
+                  <div>
+                  <p className="text-gray-700 text-[12px] md:text-[16px] font-medium">
                     {item.name}
-                  </span>
-                  <span className="text-gray-700 text-[12px] md:text-[16px] font-medium">
+                  </p>
+                  <p className="text-gray-700 text-[12px] md:text-[16px] font-medium">
                     x {item.quantity}
-                  </span>
-                  <span className="text-gray-900 text-[12px] md:text-[16px] font-semibold">
+                  </p>
+                  <p className="text-gray-900 text-[12px] md:text-[16px] font-semibold">
                     Rs.{item.discountprice}
-                  </span>
+                  </p>
+                  </div>
                 </div>
               ))}
             </div>
 
             <button 
             onClick={handleClearOrder}
-            className="bg-orange-500 text-white text-[10px] md:text-[12px] font-extrabold duration-200 hover:bg-orange-600 rounded-2xl p-1 md:p-2">
-              Prepared
+            className="bg-orange-500 mt-4 text-white font-bold duration-200 hover:bg-orange-600 rounded-2xl p-1 md:p-2">
+              Clear
             </button>
           </div>
 

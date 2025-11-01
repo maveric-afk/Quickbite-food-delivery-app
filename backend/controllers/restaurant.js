@@ -145,4 +145,22 @@ async function handleAddingOrders(item, userId) {
     }
 }
 
-module.exports = { handleRestaurantSignin, handleGetRestaurantWithId, handleRestaurantSignup, handleVerifyEmail, handleGetRestaurant, handleLogout, handleGetAllRestaurants, handleAddingOrders }
+
+async function handleClearOrder(req,res) {
+    const token=req.cookies?.token;
+    if(!token){
+        return res.json({error:"Not logged in"})
+    }
+    const restaurant=getRestaurant(token);
+    if(!restaurant){
+        return res.json({error:"Not logged in"})
+    }
+    const body=req.body;
+    await restaurantModel.updateOne({_id:restaurant.Id},{$pull:{orders:{_id:body.orderId}}});
+    for(const item of body.items){
+        await UserModel.updateOne({_id:body.userId},{$pull:{LiveOrders:{itemId:item.itemId}}})
+    }
+    return res.json({success:"Order cleared"})
+}
+
+module.exports = { handleRestaurantSignin, handleGetRestaurantWithId, handleRestaurantSignup, handleVerifyEmail, handleGetRestaurant, handleLogout, handleGetAllRestaurants, handleAddingOrders,handleClearOrder }
