@@ -5,7 +5,7 @@ const router=express.Router();
 
 router.get('/',handleGetUser);
 router.get('/:id',handleGetUserWithID)
-router.get('/logout',handleLogout)
+router.get('/logout/user',handleLogout)
 
 router.patch('/cart/add/:id',handleAddItemCart)
 router.patch('/cart/remove/:id',handleRemoveItemCart);

@@ -56,7 +56,7 @@ export default function AdminHome() {
   const navigate=useNavigate();
 
   function handleLogout(){
-    api.get('/api/restaurant/logout')
+    api.get('/api/restaurant/logout/restaurant')
     .then((res)=>{
         if(res.data.success){
             toast.success(res.data.success);

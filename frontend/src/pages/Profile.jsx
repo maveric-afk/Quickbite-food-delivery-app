@@ -26,7 +26,7 @@ const Profile = () => {
   const navigate=useNavigate();
 
   const handleLogout=()=>{
-    api.get('/api/user/logout')
+    api.get('/api/user/logout/user')
     .then((res)=>{
       if(res.data.success){
         toast.success(res.data.success);

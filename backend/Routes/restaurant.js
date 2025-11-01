@@ -5,7 +5,7 @@ const {LoggedinRestaurantOnly}=require('../middlewares/restaurant')
 const {LoggedinUserOnly}=require('../middlewares/user')
 
 router.get('/',handleGetRestaurant)
-router.get('/logout',handleLogout)
+router.get('/logout/restaurant',handleLogout)
 router.get('/all',handleGetAllRestaurants)
 router.get('/:id',handleGetRestaurantWithId)
 
