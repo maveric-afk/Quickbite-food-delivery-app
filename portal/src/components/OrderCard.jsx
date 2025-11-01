@@ -1,6 +1,24 @@
 import { Mail, MapPin, Phone, User } from "lucide-react";
+import api from '../api/axios'
+import { useEffect, useState } from "react";
 
-export function OrderCard({ user={name:'Rohit Sharma',email:'rohit@gmail.com',contact:9461089817,address:'Basant vihar, Bhopal'}, foodItems=[{name:'Paneer Tikka',price:210},{name:'Kadhai Paneer',price:190},{name:'Butter Naan',price:120}] }) {
+export default function OrderCard({userId}) {
+  const [user,setUser]=useState({});
+
+  useEffect(()=>{
+    api.get(`/api/user/${userId}`)
+    .then((res)=>{
+      if(res.data.user){
+        setUser(res.data.user)
+      }
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+  },[])
+
+  console.log(user)
+
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
       <div className="bg-gray-200 rounded-lg shadow-sm shadow-black hover:shadow-md transition-shadow duration-300 overflow-hidden">
@@ -11,7 +29,7 @@ export function OrderCard({ user={name:'Rohit Sharma',email:'rohit@gmail.com',co
             <h2 className="text-sm md:text-lg font-semibold text-gray-900 mb-4">
               Order Items
             </h2>
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               {foodItems.map((item, index) => (
                 <div
                   key={index}
@@ -25,7 +43,7 @@ export function OrderCard({ user={name:'Rohit Sharma',email:'rohit@gmail.com',co
                   </span>
                 </div>
               ))}
-            </div>
+            </div> */}
 
             <button className="bg-orange-500 text-white text-[10px] md:text-[12px] font-extrabold duration-200 hover:bg-orange-600 rounded-2xl p-1 md:p-2">
               Prepared
@@ -44,7 +62,7 @@ export function OrderCard({ user={name:'Rohit Sharma',email:'rohit@gmail.com',co
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Name</p>
                   <p className="text-gray-900 text-[12px] md:text-[16px] font-medium">
-                    {user.name}
+                    {user.FullName}
                   </p>
                 </div>
               </div>
@@ -55,7 +73,7 @@ export function OrderCard({ user={name:'Rohit Sharma',email:'rohit@gmail.com',co
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Address</p>
                   <p className="text-gray-900 text-[12px] md:text-[16px] font-medium">
-                    {user.address}
+                    {user.Address}
                   </p>
                 </div>
               </div>
@@ -66,7 +84,7 @@ export function OrderCard({ user={name:'Rohit Sharma',email:'rohit@gmail.com',co
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Email</p>
                   <p className="text-gray-900 text-[12px] md:text-[16px] font-medium break-all">
-                    {user.email}
+                    {user.Email}
                   </p>
                 </div>
               </div>
@@ -77,7 +95,7 @@ export function OrderCard({ user={name:'Rohit Sharma',email:'rohit@gmail.com',co
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Contact</p>
                   <p className="text-gray-900 text-[12px] md:text-[16px] font-medium">
-                    {user.contact}
+                    {user.ContactNo}
                   </p>
                 </div>
               </div>

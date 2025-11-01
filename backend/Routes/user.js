@@ -1,9 +1,10 @@
 const express=require('express');
-const {handleVerifyEmail,handleUserSignin,handleUserSignup,handleGetUser,handleLogout,handleAddItemCart,handleRemoveItemCart,handleEditUserAddress}=require('../controllers/user');
+const {handleVerifyEmail,handleUserSignin,handleUserSignup,handleGetUser,handleLogout,handleAddItemCart,handleRemoveItemCart,handleEditUserAddress,handleGetUserWithID}=require('../controllers/user');
 
 const router=express.Router();
 
 router.get('/',handleGetUser);
+router.get('/:id',handleGetUserWithID)
 router.get('/logout',handleLogout)
 
 router.patch('/cart/add/:id',handleAddItemCart)

@@ -7,7 +7,6 @@ export default function ItemCard({
   name,
   type,
   category,
-  className = "",
 }) {
 
   const isVeg = type?.toLowerCase() === "veg"
@@ -18,22 +17,18 @@ export default function ItemCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       whileHover={{ scale: 1.03 }}
-      className={`group max-w-sm md:max-w-md w-full overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 text-neutral-100 shadow-sm hover:shadow-md transition-shadow ${className}`}
+      className={`group max-w-sm md:max-w-md w-full overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 text-neutral-100 shadow-sm hover:shadow-md transition-shadow`}
       role="article"
       aria-label={name}
     >
       {/* Image section (~60% height; uses fixed heights for consistency) */}
       <div className="relative h-48 md:h-56 overflow-hidden">
         <motion.img
-          src={imageSrc}
+          src={`${import.meta.env.VITE_API_BASE_URL}/${imageSrc}`}
           alt={imageAlt || name}
           className="h-full w-full object-cover"
           whileHover={{ scale: 1.1 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-        />
-        <div
-          className="pointer-events-none absolute inset-0 bg-linear-to-b from-transparent to-black/10"
-          aria-hidden="true"
         />
       </div>
 

@@ -91,6 +91,12 @@ async function handleGetUser(req,res) {
     return res.json({success:'Logged in',user:userData[0]});
 }
 
+async function handleGetUserWithID(req,res) {
+    const id=req.params?.id;
+    const userwithId=await UserModel.find({_id:id});
+    return res.json({user:userwithId})
+}
+
 async function handleLogout(req,res) {
     const token=req.cookies?.token;
     if(!token){
@@ -216,4 +222,4 @@ async function handleEditUserAddress(req,res) {
 }
 
 
-module.exports={handleVerifyEmail,handleUserSignup,handleUserSignin,handleGetUser,handleLogout,handleEditProfileImg,handleRemoveItemCart,handleAddItemCart,handleEditUserAddress}
+module.exports={handleVerifyEmail,handleUserSignup,handleUserSignin,handleGetUser,handleLogout,handleEditProfileImg,handleRemoveItemCart,handleAddItemCart,handleEditUserAddress,handleGetUserWithID}
