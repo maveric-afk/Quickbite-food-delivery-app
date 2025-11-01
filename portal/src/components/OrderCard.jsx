@@ -2,8 +2,9 @@ import { Mail, MapPin, Phone, User } from "lucide-react";
 import api from '../api/axios'
 import { useEffect, useState } from "react";
 
-export default function OrderCard({userId}) {
+export default function OrderCard({userId,items=[]}) {
   const [user,setUser]=useState({});
+  const [allfoodItems,setAllfoodItems]=useState([])
 
   useEffect(()=>{
     api.get(`/api/user/${userId}`)
@@ -17,7 +18,30 @@ export default function OrderCard({userId}) {
     })
   },[])
 
-  console.log(user)
+  useEffect(() => {
+    api.get('/api/fooditem/all')
+      .then((res) => {
+       if(res.data.allfoodItems) {
+          setAllfoodItems(res.data.allfoodItems);
+        }
+      })
+  }, [])
+
+
+  function handleClearOrder() {
+    
+  }
+
+
+  const OrderedItems=[];
+  items.forEach((item,ind)=>{
+    allfoodItems.forEach((fooditem,ind)=>{
+      if(fooditem._id==item.itemId){
+        fooditem.quantity=item.quantity;
+        OrderedItems.push(fooditem);
+      }
+    })
+  })
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4">
@@ -29,23 +53,28 @@ export default function OrderCard({userId}) {
             <h2 className="text-sm md:text-lg font-semibold text-gray-900 mb-4">
               Order Items
             </h2>
-            {/* <div className="space-y-3">
-              {foodItems.map((item, index) => (
+            <div className="space-y-3">
+              {OrderedItems.map((item) => (
                 <div
-                  key={index}
+                  key={item._id}
                   className="flex justify-around items-center p-3 rounded-md hover:bg-gray-50 transition-colors duration-200"
                 >
                   <span className="text-gray-700 text-[12px] md:text-[16px] font-medium">
                     {item.name}
                   </span>
+                  <span className="text-gray-700 text-[12px] md:text-[16px] font-medium">
+                    x {item.quantity}
+                  </span>
                   <span className="text-gray-900 text-[12px] md:text-[16px] font-semibold">
-                    Rs.{item.price}
+                    Rs.{item.discountprice}
                   </span>
                 </div>
               ))}
-            </div> */}
+            </div>
 
-            <button className="bg-orange-500 text-white text-[10px] md:text-[12px] font-extrabold duration-200 hover:bg-orange-600 rounded-2xl p-1 md:p-2">
+            <button 
+            onClick={handleClearOrder}
+            className="bg-orange-500 text-white text-[10px] md:text-[12px] font-extrabold duration-200 hover:bg-orange-600 rounded-2xl p-1 md:p-2">
               Prepared
             </button>
           </div>

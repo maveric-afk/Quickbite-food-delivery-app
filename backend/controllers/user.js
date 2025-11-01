@@ -94,7 +94,7 @@ async function handleGetUser(req,res) {
 async function handleGetUserWithID(req,res) {
     const id=req.params?.id;
     const userwithId=await UserModel.find({_id:id});
-    return res.json({user:userwithId})
+    return res.json({user:userwithId[0]})
 }
 
 async function handleLogout(req,res) {

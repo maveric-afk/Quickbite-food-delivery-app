@@ -117,7 +117,7 @@ export default function RestaurantDashboard() {
           <div className="px-4">
         {orders.map((order)=>( 
           <div key={order._id} className="my-2">
-              <OrderCard userId={order.orderedBy} />
+              <OrderCard userId={order.orderedBy} items={order.items} />
           </div>
           ))}
           </div>
