@@ -1,29 +1,36 @@
 const restaurantModel = require('../Models/RestaurantModel')
 const nodemailer = require('nodemailer')
+const Brevo=require('@getbrevo/brevo')
 const bcrypt = require('bcrypt')
 const { setRestaurant, getRestaurant } = require('../Authentication/jwtAuth')
 const fooditemModel = require('../Models/FoodItemModel')
 const UserModel = require('../Models/UserModel')
 
-const transporter = nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
-    port: 587,
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_RESTAURANT_PASS
+const apiInstance=new Brevo.TransactionalEmailsApi();
+apiInstance.authentications["apiKey"].apiKey=process.env.SMTP_RESTAURANT_PASS
+// const transporter = nodemailer.createTransport({
+//     host: 'smtp-relay.brevo.com',
+//     port: 587,
+//     auth: {
+//         user: process.env.SMTP_USER,
+//         pass: process.env.SMTP_RESTAURANT_PASS
+//     }
+// })
+
+const sendmail=async(to,sub,msg)=>{
+    try {
+        const sendSmtpMail={
+        sender:{email:'guptachirag965@gmail.com',name:"Quickbite"},
+        to:[{email:to}],
+        subject:sub,
+        htmlContent:msg
     }
-})
-
-function sendMail(to, sub, msg) {
-    transporter.sendMail({
-        from: `guptachirag965@gmail.com`,
-        to: to,
-        subject: sub,
-        html: msg
-    })
+    const data=await apiInstance.sendTransacEmail(sendSmtpMail);
+    console.log('Email sent: ',data.messageId || data)
+    } catch (error) {
+        console.error('Email failed',error)
+    }
 }
-
-
 
 async function handleRestaurantSignin(req, res) {
     const body = req.body;
@@ -66,7 +73,7 @@ async function handleRestaurantSignup(req, res) {
 async function handleVerifyEmail(req, res) {
     const body = req.body;
     const otp = Math.floor(Math.random() * 9999) + 1000;
-    sendMail(body.email, 'Otp verification for Quickbite'
+    await sendmail(body.email, 'Otp verification for Quickbite'
         ,
         `<h2>Dear ${body.name}</h2><br>
 You are just one step away to Join Quickbite.<br>

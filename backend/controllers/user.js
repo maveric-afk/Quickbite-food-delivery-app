@@ -1,33 +1,42 @@
 const nodemailer=require('nodemailer');
+const Brevo=require('@getbrevo/brevo')
 const UserModel=require('../Models/UserModel')
 const bcrypt=require('bcrypt')
 const {setUser,getUser}=require('../Authentication/jwtAuth');
 const fooditemModel = require('../Models/FoodItemModel');
 
-const transporter=nodemailer.createTransport(
-    {
-        host:'smtp-relay.brevo.com',
-        port:587,
-        auth:{
-            user:process.env.SMTP_USER,
-            pass:process.env.SMTP_PASS
-        }
-    }
-)  
+const apiInstance=new Brevo.TransactionalEmailsApi();
+apiInstance.authentications["apiKey"].apiKey=process.env.SMTP_PASS
+// const transporter=nodemailer.createTransport(
+//     {
+//         host:'smtp-relay.brevo.com',
+//         port:587,
+//         auth:{
+//             user:process.env.SMTP_USER,
+//             pass:process.env.SMTP_PASS
+//         }
+//     }
+// )  
 
-const sendmail=(to,sub,msg)=>{
-    transporter.sendMail({
-        from:`guptachirag965@gmail.com`,
-        to:to,
+const sendmail=async(to,sub,msg)=>{
+    try {
+        const sendSmtpMail={
+        sender:{email:'guptachirag965@gmail.com',name:"Quickbite"},
+        to:[{email:to}],
         subject:sub,
-        html:msg
-    })
+        htmlContent:msg
+    }
+    const data=await apiInstance.sendTransacEmail(sendSmtpMail);
+    console.log('Email sent: ',data.messageId || data)
+    } catch (error) {
+        console.error('Email failed',error)
+    }
 }
 
 async function handleVerifyEmail(req,res) {
     const body=req.body;
   const otp=Math.floor(Math.random()*9999) + 1000;
-  sendmail(body.email,'Otp Verification for Your Quickbite Account'
+  await sendmail(body.email,'Otp Verification for Your Quickbite Account'
     ,`<h2>Dear ${body.fullName}</h2><br>
 
 Your One-Time Password (OTP) is<br><br> <h1><b>${otp}</b></h1>.
