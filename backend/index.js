@@ -19,7 +19,6 @@ const restaurantModel = require('./Models/RestaurantModel');
 const fooditemModel = require('./Models/FoodItemModel');
 
 dotenv.config()
-
 const stripe=require('stripe')("sk_test_51SNoXkRqgyn51fCGuB0UXm0kJxhSWL2SdbDc9UrzneruL6fsdKy2ZPfdl1ic6O93OqZ9GUc9xFqP6hqP67pzZW6c00qEaCE8bm")
 
 
@@ -33,6 +32,19 @@ connectToDB(process.env.MONGO_URI)
 .catch((err)=>{
     console.log('Error in connecting MongoDB');
 })
+
+const allowedOrigins=[
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://justquickbite.vercel.app',
+    'https://quickbite-portal.vercel.app'
+]
+app.use(cors(
+    {
+    origin: allowedOrigins,
+    credentials: true, 
+  }
+));
 
 app.use(express.urlencoded({extended:false}));
 
@@ -84,19 +96,6 @@ app.use(express.json());
 app.use('/uploads',express.static('uploads'));
 app.use(cookieparser());
 
-
-const allowedOrigins=[
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'https://justquickbite.vercel.app/',
-    'https://quickbite-portal.vercel.app/'
-]
-app.use(cors(
-    {
-    origin: allowedOrigins,
-    credentials: true, 
-  }
-));
 
 const storage=multer.diskStorage({
     destination:function(req,file,cb){
