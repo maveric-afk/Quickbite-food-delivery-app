@@ -100,7 +100,7 @@ const Profile = () => {
         <div>
         {user.ProfileImg
         ?<img 
-          className='rounded-full h-[8rem] w-[8rem] sm:h-[12rem] sm:w-[12rem] lg:h-[16rem] lg:w-[16rem] hover:scale-105 duration-200'
+          className='rounded-full object-cover h-[8rem] w-[8rem] sm:h-[12rem] sm:w-[12rem] lg:h-[16rem] lg:w-[16rem] hover:scale-105 duration-200'
           src={`${import.meta.env.VITE_API_BASE_URL}/${user.ProfileImg}`} alt="Profile pic" />
         :<img
         src='/Dummyavatar.jpg'
@@ -125,8 +125,8 @@ const Profile = () => {
         onClick={(e)=>{navigate('/cart')}}
         className='px-12 py-8 flex justify-center items-center rounded-2xl hover:scale-105 bg-black text-white font-extrabold hover:text-orange-600 duration-200 hover:border hover:border-orange-600'>Cart</button>
         <button 
-        
-        className='px-12 py-4 flex justify-center items-center rounded-2xl bg-black text-white font-extrabold hover:text-orange-600 duration-200 hover:border hover:border-orange-600'>Past orders</button>
+        onClick={(e)=>{navigate('/orders')}}
+        className='px-12 py-4 flex justify-center items-center rounded-2xl bg-black text-white font-extrabold hover:text-orange-600 duration-200 hover:border hover:border-orange-600'>Orders</button>
         <button 
         onClick={(e)=>{navigate('/help')}}
         className='px-12 py-4 flex justify-center items-center rounded-2xl bg-black text-white font-extrabold hover:text-orange-600 duration-200 hover:border hover:border-orange-600'>Terms & conditions</button>

@@ -51,17 +51,6 @@ const UserSchema=new mongoose.Schema({
         }
        } 
     ],
-    PastOrders:[{
-        itemId:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'fooditems',
-        },
-        quantity:{
-            type:Number,
-            required:true,
-        }
-       } 
-    ]
 },{timestamps:true})
 
 const UserModel=mongoose.model('user',UserSchema);

@@ -9,6 +9,7 @@ export default function RestaurantDashboard() {
   const [isOpen, setIsOpen] = useState(false)
   const [loggedIn,setLoggedIn]=useState(false)
   const [restaurant,setRestaurant]=useState({});
+  const [orders,setOrders]=useState([])
 
   const navigate=useNavigate()
 
@@ -30,6 +31,7 @@ export default function RestaurantDashboard() {
           if(res.data.success){
               setLoggedIn(true);
               setRestaurant(res.data.restaurant);
+              setOrders(res.data.restaurant.orders)
           }
           else{
             toast.error(res.data.error);
@@ -85,110 +87,10 @@ export default function RestaurantDashboard() {
             <h2 className="text-2xl font-bold text-black">Live Orders</h2>
             <div className="w-3 h-3 bg-red-600 rounded-full animate-pulse shadow-lg shadow-red-600"></div>
           </div>
-
-          <div className="space-y-4">
-            {restaurant.orders.map((order, index) => (
-                  <div
-                    key={order._id}
-                    className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 hover:border-orange-200 animate-fade-in"
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-black text-lg mb-2">{order.orderedBy}</h3>
-                        <p className="text-gray-600 text-sm mb-3">{order.items.length}</p>
-                        {/* <p className="text-gray-500 text-xs">{order.time}</p> */}
-                      </div>
-
-                      {/* <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <p className="text-2xl font-bold text-orange-600">${order.amount.toFixed(2)}</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {getStatusIcon(order.status)}
-                          <span
-                            className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${getStatusColor(
-                              order.status,
-                            )}`}
-                          >
-                            {order.status}
-                          </span>
-                        </div>
-                      </div> */}
-                    </div>
-                  </div>
-                ))}
-          </div>
+            {orders.length}
         </div>
 
-        {/* Food Items Grid */}
-        <div className="animate-fade-in-delay-2">
-          <h2 className="text-2xl font-bold text-black mb-6">Available Food Items</h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {isLoading
-              ? Array.from({ length: 8 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse"
-                  >
-                    <div className="h-40 bg-gray-200"></div>
-                    <div className="p-4 space-y-3">
-                      <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                      <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                    </div>
-                  </div>
-                ))
-              : items.map((item, index) => (
-                  <div
-                    key={item.id}
-                    className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:border-orange-200 transition-all duration-300 hover:scale-105 cursor-pointer group animate-fade-in"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    {/* Image Section */}
-                    <div className="relative h-40 bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center overflow-hidden">
-                      <span className="text-6xl group-hover:scale-110 transition-transform duration-300">
-                        {item.image}
-                      </span>
-
-                      {/* Discount Badge */}
-                      {item.discount && (
-                        <div className="absolute top-3 right-3 bg-red-600 text-white px-2 py-1 rounded-lg text-xs font-bold">
-                          -{item.discount}%
-                        </div>
-                      )}
-
-                      {/* Veg/Non-Veg Icon */}
-                      <div className="absolute top-3 left-3">
-                        {item.isVeg ? (
-                          <Leaf size={20} className="text-green-600 bg-white rounded-full p-1" />
-                        ) : (
-                          <Flame size={20} className="text-red-600 bg-white rounded-full p-1" />
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Content Section */}
-                    <div className="p-4">
-                      <h3 className="font-semibold text-black text-base mb-1 line-clamp-2">{item.name}</h3>
-                      <p className="text-gray-500 text-xs mb-3">{item.category}</p>
-
-                      {/* Price Section */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg font-bold text-orange-600">
-                            ${(item.price * (1 - (item.discount || 0) / 100)).toFixed(2)}
-                          </span>
-                          {item.discount && (
-                            <span className="text-sm text-gray-400 line-through">${item.price.toFixed(2)}</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-          </div>
-        </div>
+        
 
         {/* Add New Item Button - Not Fixed */}
         <div className="flex justify-center py-8">

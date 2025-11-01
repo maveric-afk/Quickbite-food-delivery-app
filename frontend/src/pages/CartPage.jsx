@@ -88,6 +88,9 @@ export default function CartPage() {
 
   //payment
   async function handlePayment() {
+    if(cartItems.length==0){
+      return toast.error('Cart is empty')
+    }
     const stripe=await loadStripe("pk_test_51SNoXkRqgyn51fCGwCBOOTJloTDsxB5XFoXSSZmE6paBPRfpzPAwaD8Ev3cphgHCcghF3ae7aTL2Tis0FubsO9WX00G7ljOmuE");
     api.post('/api/create-checkout-session',{cartItems:cartItems})
     .then((res)=>{

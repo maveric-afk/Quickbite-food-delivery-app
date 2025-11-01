@@ -57,7 +57,10 @@ app.post('/api/stripe-webhook',express.raw({ type: "application/json" }),async(r
         console.log("💰 Payment successful!", session);
         const userData=await UserModel.find({_id:userId})
         const cart=userData[0].Cart;
-        await UserModel.updateOne({_id:userId},{$set:{Cart:[],LiveOrders:cart}});
+        await UserModel.updateOne({_id:userId},{$set:{Cart:[]}});
+        for(const item of cart){
+            await UserModel.updateOne({_id:userId},{$push:{LiveOrders:item}})
+        }
         
         for(const item of cart){
             await handleAddingOrders(item,userId);
