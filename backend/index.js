@@ -119,7 +119,7 @@ app.patch('/api/user/editprofileimg',upload.single('profileImg'),handleEditProfi
 //payment gateway
 app.post('/api/create-checkout-session',async(req,res)=>{
     const {cartItems}=req.body;
-    const token=req.cookies?.token;
+    const token=req.cookies?.tokenA;
     if(!token){
         return res.json({error:"Not logged in"})
     }

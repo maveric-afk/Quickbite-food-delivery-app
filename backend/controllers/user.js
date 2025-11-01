@@ -76,7 +76,7 @@ async function handleUserSignin(req,res) {
     }
 
     const token=setUser(user[0]);
-    res.cookie('token',token, {
+    res.cookie('tokenA',token, {
   httpOnly: true,     
   secure: true,       
   sameSite: "none",    
@@ -88,7 +88,7 @@ return res.json({success:'Logged in'})
 }
 
 async function handleGetUser(req,res) {
-    const token=req.cookies?.token;
+    const token=req.cookies?.tokenA;
     if(!token){
         return res.json({error:'Not logged in'})
     }
@@ -107,7 +107,7 @@ async function handleGetUserWithID(req,res) {
 }
 
 async function handleLogout(req,res) {
-    const token=req.cookies?.token;
+    const token=req.cookies?.tokenA;
     if(!token){
         return res.json({error:'Not Logged in'});
     }
@@ -115,7 +115,7 @@ async function handleLogout(req,res) {
     if(!user){
          return res.json({error:'Not Logged in'});
     }
-     res.cookie('token','',{
+     res.cookie('tokenA','',{
     httpOnly: true,
     secure: true,
     sameSite: "none",
@@ -127,7 +127,7 @@ async function handleLogout(req,res) {
 async function handleEditProfileImg(req,res) {
     const file=req.file;
     console.log(file)
-    const token=req.cookies?.token;
+    const token=req.cookies?.tokenA;
      if(!token){
         return res.json({error:'Not logged in'});
     }
@@ -141,7 +141,7 @@ async function handleEditProfileImg(req,res) {
 }
 
 async function handleAddItemCart(req,res) {
-    const token=req.cookies?.token;
+    const token=req.cookies?.tokenA;
     const itemId=req.params.id;
     if(!token){
         return res.json({error:'Not logged in'})
@@ -178,7 +178,7 @@ async function handleAddItemCart(req,res) {
 }
 
 async function handleRemoveItemCart(req,res) {
-    const token=req.cookies?.token;
+    const token=req.cookies?.tokenA;
     const itemId=req.params.id;
     if(!token){
         return res.json({error:"Not logged in"})
@@ -217,7 +217,7 @@ async function handleRemoveItemCart(req,res) {
 
 async function handleEditUserAddress(req,res) {
     const body=req.body;
-    const token=req.cookies?.token;
+    const token=req.cookies?.tokenA;
     if(!token){
         return res.json({error:"Not logged in"})
     }

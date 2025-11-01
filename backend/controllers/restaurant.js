@@ -44,7 +44,7 @@ async function handleRestaurantSignin(req, res) {
     }
 
     const token = setRestaurant(restaurant[0]);
-    res.cookie('token', token, {
+    res.cookie('tokenB', token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
@@ -93,7 +93,7 @@ Best regards,<br>
 
 
 async function handleGetRestaurant(req, res) {
-    const token = req.cookies?.token;
+    const token = req.cookies?.tokenB;
     if (!token) {
         return res.json({ error: 'Not logged in' })
     }
@@ -106,7 +106,7 @@ async function handleGetRestaurant(req, res) {
 }
 
 async function handleLogout(req, res) {
-    const token = req.cookies?.token;
+    const token = req.cookies?.tokenB;
     if (!token) {
         return res.json({ error: 'Not Logged in' });
     }
@@ -114,7 +114,12 @@ async function handleLogout(req, res) {
     if (!restaurant) {
         return res.json({ error: 'Not Logged in' });
     }
-    res.cookie('token', '');
+    res.cookie('tokenB','',{
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    expires: new Date(0)
+  });
     return res.json({ success: 'Logged out' })
 }
 
@@ -154,7 +159,7 @@ async function handleAddingOrders(item, userId) {
 
 
 async function handleClearOrder(req,res) {
-    const token=req.cookies?.token;
+    const token=req.cookies?.tokenB;
     if(!token){
         return res.json({error:"Not logged in"})
     }
