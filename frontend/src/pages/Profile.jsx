@@ -116,7 +116,6 @@ const Profile = () => {
 
         <div>
           <p className='text-lg sm:text-xl md:text-2xl font-bold text-white'><span className='font-extrabold text-orange-600'>Username:</span> {user.FullName}</p>
-           <p className='text-sm mt-4 sm:text-lg md:text-xl text-white'><span className='font-extrabold text-orange-600'>Email:</span> {user.Email}</p>
         </div>
       </div>
 
