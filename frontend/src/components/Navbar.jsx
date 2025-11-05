@@ -115,7 +115,7 @@ export default function Navbar() {
               <NavLink
                 to='/profile'
               >
-               <img src={`${import.meta.env.VITE_API_BASE_URL}/${user.ProfileImg}` || `Dummyavatar.jpg`} alt="profileImage" className="h-10 w-10 rounded-full object-cover" />
+               <img src={user.ProfileImg} alt="profileImage" className="h-10 w-10 rounded-full object-cover" />
               </NavLink>
               <motion.span
                 variants={{
@@ -204,7 +204,7 @@ export default function Navbar() {
                     to='/profile'
                     onClick={close}
                   >
-                   <img src="/Dummyavatar.jpg" alt="profileImage" className="h-10 w-10 mb-4 rounded-full object-cover" />
+                   <img src={user.ProfileImg} alt="profileImage" className="h-10 w-10 mb-4 rounded-full object-cover" />
                   </NavLink>
                 </motion.div>
                 : <motion.div

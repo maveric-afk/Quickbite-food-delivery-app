@@ -101,7 +101,7 @@ const Profile = () => {
         {user.ProfileImg
         ?<img 
           className='rounded-full object-cover h-[8rem] w-[8rem] sm:h-[12rem] sm:w-[12rem] lg:h-[16rem] lg:w-[16rem] hover:scale-105 duration-200'
-          src={`${import.meta.env.VITE_API_BASE_URL}/${user.ProfileImg}`} alt="Profile pic" />
+          src={user.ProfileImg} alt="Profile pic" />
         :<img
         src='/Dummyavatar.jpg'
         className='rounded-full h-[8rem] w-[8rem] sm:h-[12rem] sm:w-[12rem] lg:h-[16rem] lg:w-[16rem] hover:scale-105 duration-200'
