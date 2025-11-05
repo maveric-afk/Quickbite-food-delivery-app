@@ -74,7 +74,7 @@ export default function OrderCard({orderId,userId,items=[]}) {
                   className="flex justify-around gap-2 items-center p-1 rounded-md hover:bg-gray-50 transition-colors duration-200"
                 >
                   <div>
-                    <img src={`${import.meta.env.VITE_API_BASE_URL}/${item.itemImg}`} className="h-16 w-16 md:h-28 md:w-28 rounded-2xl" />
+                    <img src={item.itemImg.includes('cloudinary')?`${item.itemImg}`:`${import.meta.env.VITE_API_BASE_URL}/${item.itemImg}`} className="h-16 w-16 md:h-28 md:w-28 rounded-2xl" />
                   </div>
                   <div>
                   <p className="text-gray-700 text-[12px] md:text-[16px] font-medium">

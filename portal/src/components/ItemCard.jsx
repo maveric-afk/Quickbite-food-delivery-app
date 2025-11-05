@@ -24,7 +24,7 @@ export default function ItemCard({
       {/* Image section (~60% height; uses fixed heights for consistency) */}
       <div className="relative h-48 md:h-56 overflow-hidden">
         <motion.img
-          src={`${import.meta.env.VITE_API_BASE_URL}/${imageSrc}`}
+          src={imageSrc.includes('cloudinary')?`${imageSrc}`:`${import.meta.env.VITE_API_BASE_URL}/${imageSrc}`}
           alt={imageAlt || name}
           className="h-full w-full object-cover"
           whileHover={{ scale: 1.1 }}

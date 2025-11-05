@@ -91,7 +91,7 @@ export default function RestaurantDashboard() {
             <div>
               <img
                 className="rounded-2xl h-[10rem] md:h-[15rem]"
-                src={`${import.meta.env.VITE_API_BASE_URL}/${restaurant.image}`} alt="Restaurant Image" />
+                src={restaurant.image.includes('cloudinary')?`${restaurant.image}`:`${import.meta.env.VITE_API_BASE_URL}/${restaurant.image}`} alt="Restaurant Image" />
             </div>
 
             {/* Restaurant Info */}
