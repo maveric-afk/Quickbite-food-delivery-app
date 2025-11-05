@@ -17,6 +17,8 @@ const UserModel = require('./Models/UserModel');
 const { getUser } = require('./Authentication/jwtAuth');
 const restaurantModel = require('./Models/RestaurantModel');
 const fooditemModel = require('./Models/FoodItemModel');
+const cloudinary=require('cloudinary').v2;
+const {CloudinaryStorage}=require('multer-storage-cloudinary')
 
 dotenv.config()
 const stripe=require('stripe')("sk_test_51SNoXkRqgyn51fCGuB0UXm0kJxhSWL2SdbDc9UrzneruL6fsdKy2ZPfdl1ic6O93OqZ9GUc9xFqP6hqP67pzZW6c00qEaCE8bm")
@@ -45,6 +47,12 @@ app.use(cors(
     credentials: true, 
   }
 ));
+
+cloudinary.config({
+    cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
+    api_key:process.env.CLOUDINARY_API_KEY,
+    api_secret:process.env.CLOUDINARY_API_SECRET
+})
 
 app.use(express.urlencoded({extended:false}));
 
@@ -97,14 +105,13 @@ app.use('/uploads',express.static('uploads'));
 app.use(cookieparser());
 
 
-const storage=multer.diskStorage({
-    destination:function(req,file,cb){
-        return cb(null,'./uploads')
-    },
-    filename:function(req,file,cb){
-        return cb(null,`${Date.now()}-${file.originalname}`)
-    }
-})
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'quickbite_uploads',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+  },
+});
 
 const upload=multer({storage:storage})
 
