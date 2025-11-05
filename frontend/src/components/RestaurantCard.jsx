@@ -21,7 +21,7 @@ export default function RestaurantCard({name,image,location,rating,_id}) {
       {/* Image section (~60% height; uses fixed heights for consistency) */}
       <div className="relative h-48 md:h-56 overflow-hidden">
         <motion.img
-          src={image.startsWith('http')?`${image}`:`${import.meta.env.VITE_API_BASE_URL}/${image}`}
+          src={`${import.meta.env.VITE_API_BASE_URL}/${image}`}
           alt={name}
           className="h-full w-full object-cover"
           whileHover={{ scale: 1.1 }}
