@@ -91,7 +91,7 @@ export default function RestaurantDashboard() {
             <div>
               <img
                 className="rounded-2xl h-[10rem] md:h-[15rem]"
-                src={restaurant.image[2]=='t'?`${restaurant.image}`:`${import.meta.env.VITE_API_BASE_URL}/${restaurant.image}`} alt="Restaurant Image" />
+                src={restaurant.image.startsWith('http')?`${restaurant.image}`:`${import.meta.env.VITE_API_BASE_URL}/${restaurant.image}`} alt="Restaurant Image" />
             </div>
 
             {/* Restaurant Info */}
