@@ -18,7 +18,7 @@ const { getUser } = require('./Authentication/jwtAuth');
 const restaurantModel = require('./Models/RestaurantModel');
 const fooditemModel = require('./Models/FoodItemModel');
 const cloudinary=require('cloudinary').v2;
-const {CloudinaryStorage}=require('multer-storage-cloudinary')
+const fs=require('fs')
 
 dotenv.config()
 const stripe=require('stripe')("sk_test_51SNoXkRqgyn51fCGuB0UXm0kJxhSWL2SdbDc9UrzneruL6fsdKy2ZPfdl1ic6O93OqZ9GUc9xFqP6hqP67pzZW6c00qEaCE8bm")
@@ -105,12 +105,9 @@ app.use('/uploads',express.static('uploads'));
 app.use(cookieparser());
 
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'quickbite_uploads',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-  },
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, 'uploads/'),
+  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
 
 const upload=multer({storage:storage})
@@ -119,10 +116,40 @@ app.use('/api/user',userRouter);
 app.use('/api/restaurant',restaurantRouter);
 app.use('/api/fooditem',fooditemRouter);
 
-app.post('/api/restaurant/signup',upload.single('image'),handleRestaurantSignup)
-app.post('/api/restaurant/:id/newitem',upload.single('image'),handleAddNewItems)
+app.post('/api/restaurant/signup',upload.single('image'),async(req,res)=>{
+     const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'quickbite_uploads',
+    });
 
-app.patch('/api/user/editprofileimg',upload.single('profileImg'),handleEditProfileImg)
+    fs.unlinkSync(req.file.path);
+
+    req.file.path = result.secure_url;
+
+    await handleRestaurantSignup(req, res);
+})
+app.post('/api/restaurant/:id/newitem',upload.single('image'),async(req,res)=>{
+     const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'quickbite_uploads',
+    });
+
+    fs.unlinkSync(req.file.path);
+
+    req.file.path = result.secure_url;
+
+    await handleAddNewItems(req, res);
+})
+
+app.patch('/api/user/editprofileimg',upload.single('profileImg'),async(req,res)=>{
+     const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'quickbite_uploads',
+    });
+
+    fs.unlinkSync(req.file.path);
+
+    req.file.path = result.secure_url;
+
+    await handleEditProfileImg(req, res);
+})
 
 //payment gateway
 app.post('/api/create-checkout-session',async(req,res)=>{
