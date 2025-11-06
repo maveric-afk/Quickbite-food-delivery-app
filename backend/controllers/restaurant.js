@@ -5,17 +5,15 @@ const bcrypt = require('bcrypt')
 const { setRestaurant, getRestaurant } = require('../Authentication/jwtAuth')
 const fooditemModel = require('../Models/FoodItemModel')
 const UserModel = require('../Models/UserModel')
+const dotenv=require('dotenv');
+dotenv.config()
 
-const apiInstance=new Brevo.TransactionalEmailsApi();
-apiInstance.authentications["apiKey"].apiKey=process.env.SMTP_RESTAURANT_PASS
-// const transporter = nodemailer.createTransport({
-//     host: 'smtp-relay.brevo.com',
-//     port: 587,
-//     auth: {
-//         user: process.env.SMTP_USER,
-//         pass: process.env.SMTP_RESTAURANT_PASS
-//     }
-// })
+const apiInstance = new Brevo.TransactionalEmailsApi();
+
+apiInstance.setApiKey(
+  Brevo.TransactionalEmailsApiApiKeys.apiKey,
+  process.env.SMTP_RESTAURANT_PASS
+);
 
 const sendmail=async(to,sub,msg)=>{
     try {
