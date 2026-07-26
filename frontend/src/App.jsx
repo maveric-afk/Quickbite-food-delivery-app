@@ -86,3 +86,5 @@ function App() {
 }
 
 export default App
+
+// backend: https://quickbite-backend-piw7.onrender.com

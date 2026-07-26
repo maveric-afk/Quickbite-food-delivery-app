@@ -178,8 +178,8 @@ app.post('/api/create-checkout-session',async(req,res)=>{
         payment_method_types:["card",'sepa_debit','bancontact'],
         line_items:lineItems,
         mode:'payment',
-        success_url:`https://justquickbite.vercel.app/success`,
-        cancel_url:`https://justquickbite.vercel.app/cancel`,
+        success_url:`http://localhost:5173/success`,
+        cancel_url:`http://localhost:5173/cancel`,
         metadata: {
              userId: user.Id.toString(),
          },
